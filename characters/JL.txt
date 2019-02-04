@@ -1,0 +1,16 @@
+Jenny LeClerc
+35
+0 1 1 2 4 4 4 5 6 5
+0 2 3 3 4 4 5 6 8 3
+0 3 4 4 4 4 5 6 8 3
+0 2 3 4 4 4 5 6 8 4
+21
+
+FORMAT
+Name
+Color
+SanityLine
+KnowledgeLine
+MightLine
+SpeedLine
+Age

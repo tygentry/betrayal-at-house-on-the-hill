@@ -1,0 +1,16 @@
+Zoe Ingstrom
+93
+0 3 4 5 5 6 6 7 8 3
+0 1 2 3 4 4 5 5 5 3
+0 2 2 3 3 4 4 6 7 4
+0 4 4 4 4 5 6 8 8 4
+8
+
+FORMAT
+Name
+Color
+SanityLine
+KnowledgeLine
+MightLine
+SpeedLine
+Age
