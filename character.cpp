@@ -1,5 +1,6 @@
 #include "character.h"
 
+//create formatted line based on input for character stats
 void Character::createLine(std::ifstream &file, int* &arr)
 {
   arr = new int[9];
@@ -7,6 +8,7 @@ void Character::createLine(std::ifstream &file, int* &arr)
     file >> arr[i];
 }
 
+//Constructor to create character object
 Character::Character(std::ifstream &file)
 {
   std::string first, last;
@@ -21,9 +23,35 @@ Character::Character(std::ifstream &file)
   file >> Might;
   createLine(file, SpeedLine);
   file >> Speed >> age;
-
+  actions.push_back(new Action("Move", "Char", this));
+  actions.push_back(new Action("Attack", "Char", this));
+  actions.push_back(new Action("Drop", "Char", this));
+  actions.push_back(new Action("Pickup", "Char", this));
+  actions.push_back(new Action("Give", "Char", this));
 }
 
+std::string Character::printActions()
+{
+  std::string out = "", name;
+  for (int i = 0; i < (int)actions.size(); i++)
+  {
+    out += "   " + std::to_string(i) + ") " + actions[i]->name;
+
+    if (actions[i]->originType != "Char")
+    {
+      if (actions[i]->originType == "Room")
+        ((Room *)actions[i]->origin)->name = name;
+      else if (actions[i]->originType == "Card")
+        ((Card *)actions[i]->origin)->name = name;
+      out += "(" + name + ")";
+    }
+
+    out += "\n";
+  }
+  return out;
+}
+
+//helper function to print a character and their current stats
 void Character::printChar()
 {
   std::cout << name;
@@ -34,6 +62,7 @@ void Character::printChar()
   std::cout << "Age: " << age << std::endl;
 }
 
+//method to determine if a character is dead
 bool Character::isDead()
 {
   if (Sanity <= 0 || Knowledge <= 0 || Might <= 0 || Speed <= 0)
