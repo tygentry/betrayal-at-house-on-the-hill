@@ -1,61 +1,60 @@
-storm_cellar
-solarium
-abandoned_room
-balcony
-game_room
-catacombs
-panic_room
-collapsed_room
-arsenal
-widows_walk
-charred_room
-junk_room
-menagerie
-ballroom
-kitchen
-master_bedroom
-operating_laboratory
-creaky_hallway
-tower
-bedroom
-drawing_room
-study
-library
-rookery
-nursery
-conservatory
-attic
-sewing_room
-research_laboratory
-servants_quarters
-vault
-underground_lake
-larder
-gallery
-gardens
-pentagram_chamber
-stairs_from_basement
-furnace_room
-locked_room
-chasm
-coal_chute
-dungeon
-patio
-dining_room
-wine_cellar
-cave
-crypt
-storeroom
-theater
-statuary_corridor
-bathroom
-graveyard
-tree_house
-dusty_hallway
-organ_room
-laundry
-mystic_elevator
-spiral_staircase
-bloody_room
-gymnasium
-chapel
+storm_cellar 0001
+solarium 1100
+abandoned_room 0011
+balcony 0100
+game_room 0111
+catacombs 0001
+panic_room 1111
+collapsed_room 0110
+arsenal 0011
+widows_walk 1100
+charred_room 0110
+junk_room 0111
+menagerie 0011
+ballroom 0010
+kitchen 0011
+master_bedroom 0100
+operating_laboratory 0101
+creaky_hallway 0111
+tower 0100
+bedroom 0100
+drawing_room 1100
+study 1110
+library 0110
+rookery 1000
+nursery 1100
+conservatory 0110
+attic 0100
+sewing_room 1100
+research_laboratory 0101
+servants_quarters 0101
+vault 0101
+underground_lake 0001
+larder 0001
+gallery 0100
+gardens 0010
+pentagram_chamber 0001
+stairs_from_basement 0001
+furnace_room 0001
+locked_room 1101
+chasm 0001
+coal_chute 0010
+dungeon 0001
+patio 0010
+dining_room 0010
+wine_cellar 0001
+cave 0001
+crypt 0001
+storeroom 0101
+theater 0110
+statuary_corridor 0111
+bathroom 0110
+graveyard 0010
+tree_house 0010
+dusty_hallway 0111
+organ_room 0111
+laundry 0011
+mystic_elevator 0111
+spiral_staircase 1110
+bloody_room 0110
+gymnasium 0101

@@ -4,7 +4,7 @@
 #include <ctime>
 
 #include "character.h"
-//#include "cards.h"
+#include "cards.h"
 #include "room.h"
 
 //Static variables to update and allow expansion of game contents
@@ -177,7 +177,7 @@ void fillList(std::list<std::string> &l, std::string* &s, int size)
   }
 }
 
-//Method to randomly shuffle a string array full of card or room names
+//Method to randomly shuffle a string array full of card
 void shuffle(std::string* &list, int size)
 {
   int random;
@@ -192,7 +192,42 @@ void shuffle(std::string* &list, int size)
   }
 }
 
+//helper method to fill a passed pair array with file input (Helper to shuffle)
+void fillStackR(std::ifstream &in, std::pair<std::string, std::string>* &l, int size)
+{
+  std::string tmp;
+  for (int i = 0; i < size; i++)
+  {
+    in >> tmp;
+    l[i].first = tmp;
+    in >> tmp;
+    l[i].second = tmp;
+  }
+}
 
+//helper method to fill a list with the shuffled values from a passed pair array (Helper to shuffle)
+void fillListR(std::list<std::pair<std::string, std::string> > &l, std::pair<std::string, std::string>* &s, int size)
+{
+  for (int i = 0; i < size; i++)
+  {
+    l.push_back(s[i]);
+  }
+}
+
+//Method to randomly shuffle a pair array full of room names and possible levels
+void shuffleR(std::pair<std::string, std::string>* &list, int size)
+{
+  int random;
+  std::pair<std::string, std::string> tmp;
+
+  for (int i = 0; i < size; i++)
+  {
+    random = std::rand() % size;
+    tmp = list[i];
+    list[i] = list[random];
+    list[random] = tmp;
+  }
+}
 
 //helper method to clean up allocated floors
 void clearFloor(Room* &rm, Room* &prev)
@@ -217,7 +252,7 @@ void deletePlayers(Character** &p, int n)
 int main()
 {
   //Declaring variables
-  int playerNum;
+  int playerNum, choice;
   bool haunt = false;
   Character** players;
   std::ifstream file, charData;
@@ -266,14 +301,15 @@ int main()
   //Obtaining lists of cards and rooms, shuffling to begin game
   std::srand(std::time(0));
   std::string* unshuffled;
+  std::pair<std::string, std::string>* unshuffledR;
   file.open("eventsBase.txt"); unshuffled = new std::string[numOfEvents]; fillStack(file, unshuffled, numOfEvents);  file.close();
   shuffle(unshuffled, numOfEvents); std::list<std::string> events; fillList(events, unshuffled, numOfEvents); delete[] unshuffled;
   file.open("omensBase.txt");  unshuffled = new std::string[numOfOmens]; fillStack(file, unshuffled, numOfOmens);  file.close();
   shuffle(unshuffled, numOfOmens); std::list<std::string> omens; fillList(omens, unshuffled, numOfOmens); delete[] unshuffled;
   file.open("itemsBase.txt");  unshuffled = new std::string[numOfItems]; fillStack(file, unshuffled, numOfItems);  file.close();
   shuffle(unshuffled, numOfItems); std::list<std::string> items; fillList(items, unshuffled, numOfItems); delete[] unshuffled;
-  file.open("roomsBase.txt");  unshuffled = new std::string[numOfRooms]; fillStack(file, unshuffled, numOfRooms);  file.close();
-  shuffle(unshuffled, numOfRooms); std::list<std::string> rooms; fillList(events, unshuffled, numOfRooms); delete[] unshuffled;
+  file.open("roomsBase.txt");  unshuffledR = new std::pair<std::string, std::string>[numOfRooms]; fillStackR(file, unshuffledR, numOfRooms);  file.close();
+  shuffleR(unshuffledR, numOfRooms); std::list<std::pair<std::string, std::string> > rooms; fillListR(rooms, unshuffledR, numOfRooms); delete[] unshuffledR;
 
   //starting all players in front Entrance
   for (int i = 0; i < playerNum; i++)
@@ -281,6 +317,7 @@ int main()
   //================================================================================================== END OF GAME SETUP
   //MAIN GAMEPLAY LOOP =================================================================================================
 
+  int moves;
   //main loop for pre-haunt gameplay
   while (!haunt)
   {
@@ -289,9 +326,58 @@ int main()
     {
       if (!players[i]->isDead())
       {
-        std::cout << "It's " << players[i]->name << "'s (Player " << i << ") turn." << std::endl;
-        std::cout << "Your action options are:" << std::endl;
-        std::cout << players[i]->printActions();
+        //printing out possible player actions
+        moves = players[i]->Speed;
+        do {
+
+          std::cout << "It's " << players[i]->name << "'s (Player " << i << ") turn." << std::endl;
+          std::cout << "Your action options are:" << std::endl;
+          std::cout << players[i]->printActions();
+          std::cout << "Enter -1 to end your turn." << std::endl;
+
+          std::cout << "Please enter your choice: ";
+          std::cin >> choice;
+          if (choice >= players[i]->numActions())
+          {
+            std::cout << "Please enter a valid choice.";
+          }
+          else
+          {
+            if (choice == -1)
+              break;
+            else
+            {
+              switch (choice)
+              {
+                case 0:
+
+                  break;
+
+                case 1:
+
+                  break;
+
+                case 2:
+
+                  break;
+
+                case 3:
+
+                  break;
+
+                case 4:
+
+                  break;
+
+                default:
+
+                  break;
+              }
+            }
+          }
+        } while(choice != -1 && moves > 0);
+
+
       }
       else
       {

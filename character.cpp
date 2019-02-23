@@ -23,6 +23,7 @@ Character::Character(std::ifstream &file)
   file >> Might;
   createLine(file, SpeedLine);
   file >> Speed >> age;
+  //Adding default actions to characters
   actions.push_back(new Action("Move", "Char", this));
   actions.push_back(new Action("Attack", "Char", this));
   actions.push_back(new Action("Drop", "Char", this));
@@ -30,15 +31,26 @@ Character::Character(std::ifstream &file)
   actions.push_back(new Action("Give", "Char", this));
 }
 
+Character::~Character()
+{ delete[] SanityLine; delete[] KnowledgeLine; delete[] MightLine; delete[] SpeedLine;
+  for (unsigned int i = 0; i < actions.size(); i++)
+    delete actions[i];
+}
+
+//Helper method to print out all characters actions
 std::string Character::printActions()
 {
+  //creating string containing all possible actions
   std::string out = "", name;
   for (int i = 0; i < (int)actions.size(); i++)
   {
+    //adding action name
     out += "   " + std::to_string(i) + ") " + actions[i]->name;
 
+    //if the action's origin is not from the player (gained from an item or room)
     if (actions[i]->originType != "Char")
     {
+      //cast and add the appropriate origin name
       if (actions[i]->originType == "Room")
         ((Room *)actions[i]->origin)->name = name;
       else if (actions[i]->originType == "Card")

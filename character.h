@@ -9,6 +9,7 @@
 #include "cards.h"
 #include "room.h"
 
+//Action subclass to help keep track of possible actions based on various origins
 class Action {
 public:
   std::string name;
@@ -55,7 +56,7 @@ public:
   //Constuctors and Destructor
   Character() {};
   Character(std::ifstream &file);
-  ~Character() { delete[] SanityLine; delete[] KnowledgeLine; delete[] MightLine; delete[] SpeedLine; };
+  ~Character();
 
   //Alter stats
   int getSanity() { if (Sanity > 8) Sanity = 8; return SanityLine[Sanity]; }
@@ -67,6 +68,7 @@ public:
 
   //Additional functions
   std::string printActions();
+  int numActions() { return actions.size(); }
   void printChar();
   bool isDead();
 };
