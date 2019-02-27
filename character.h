@@ -64,6 +64,7 @@ public:
   int getMight() { if (Might > 8) Might = 8; return MightLine[Might]; }
   int getSpeed() { if (Speed > 8) Speed = 8; return SpeedLine[Speed]; }
 
+  Room* getLocation() { return location; }
   void setRoom(Room* l) { location = l; }
 
   //Additional functions

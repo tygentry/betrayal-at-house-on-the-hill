@@ -229,6 +229,117 @@ void shuffleR(std::pair<std::string, std::string>* &list, int size)
   }
 }
 
+Room* newRoom(const std::string &name, Room* &wall)
+{
+    std::ifstream file;
+    std::string nm = "", tmp = "";
+    int count = 0;
+    std::string path = "rooms/" + name + ".txt";
+    file.open(path);
+
+    while (tmp != "$")
+    {
+      if (count > 1)
+        nm += " ";
+      tmp += nm;
+      file >> tmp;
+      count++;
+    }
+
+    Room* u;
+    Room* d;
+    Room* l;
+    Room* r;
+    u = NULL;
+    d = NULL;
+    l = NULL;
+    r = NULL;
+
+    file >> tmp;
+
+    if (tmp[0] == 1) u = wall;
+    if (tmp[1] == 1) d = wall;
+    if (tmp[2] == 1) l = wall;
+    if (tmp[3] == 1) r = wall;
+
+    Room* next = new Room(nm, u, d, l, r);
+
+    file.close();
+    return next;
+}
+
+int move(std::list<std::pair<std::string, std::string> > &rooms, Room* rm, Room* &wall, char dir)
+{
+  rooms.push_back(std::make_pair("end", "end"));
+
+  std::list<std::pair<std::string, std::string> >::iterator end = rooms.begin();
+  while (end->first != "end") end++;
+  std::list<std::pair<std::string, std::string> >::iterator itr = rooms.begin();
+
+  int floor;
+
+  //first case regarding moving into an already existing rooms
+  switch (dir)
+  {
+    case 'u':
+    {
+      if (rm->up != NULL && rm->up != wall)
+      { rm = rm->up; return 0; }
+    }
+    case 'd':
+    {
+      if (rm->down != NULL && rm->down != wall)
+      { rm = rm->down; return 0; }
+    }
+    case 'r':
+    {
+      if (rm->right != NULL && rm->right != wall)
+      { rm = rm->right; return 0; }
+    }
+    case 'l':
+    {
+      if (rm->left != NULL && rm->left != wall)
+      { rm = rm->left; return 0; }
+    }
+  }
+
+  //second case regarding discovering a new room
+  if (rm->isBasement()) floor = 3;
+  else if (rm->isGround()) floor = 2;
+  else if (rm->isUpper()) floor = 1;
+  else if (rm->isRoof()) floor = 0;
+
+  //searching list for a discoverable room
+  if (floor == 0)
+    while (itr != end || (itr->second)[0] != 1 || (itr->second)[1] != 1)
+    {
+      rooms.push_back(std::make_pair(itr->first, itr->second));
+      rooms.pop_front();
+      itr = rooms.begin();
+    }
+  else
+    while (itr != end || (itr->second)[floor] != 1)
+    {
+      rooms.push_back(std::make_pair(itr->first, itr->second));
+      rooms.pop_front();
+      itr = rooms.begin();
+    }
+
+  //if no discoverable rooms left
+  if (itr == end)
+    return 1;
+
+  rooms.erase(end);
+
+  Room* discovered = newRoom(itr->first, wall);
+
+  rm->linkRooms(discovered, dir);
+
+  rooms.erase(itr);
+  return 0;
+
+}
+
 //helper method to clean up allocated floors
 void clearFloor(Room* &rm, Room* &prev)
 {
@@ -287,10 +398,10 @@ int main()
   //GAME SETUP =========================================================================================================
   //Initialization of base rooms
   Room* wall = new Room("Wall", NULL, NULL, NULL, NULL);
-  Room* roof = new Room("Roof Landing", NULL, NULL, NULL, NULL);
-  Room* upper = new Room("Upper Landing", NULL, NULL, NULL, NULL);
-  Room* ground = new Room("Front Entrance", NULL, wall, NULL, NULL);
-  Room* basement = new Room("Basement Landing", NULL, NULL, NULL, NULL);
+  Room* roof = new Room("Roof Landing", NULL, NULL, NULL, NULL); roof->setR();
+  Room* upper = new Room("Upper Landing", NULL, NULL, NULL, NULL); upper->setU();
+  Room* ground = new Room("Front Entrance", NULL, wall, NULL, NULL); ground->setG();
+  Room* basement = new Room("Basement Landing", NULL, NULL, NULL, NULL); basement->setB();
   roof->setBelow(upper);
   upper->setAbove(roof);
   ground->linkRooms(new Room("Foyer", NULL, NULL, NULL, NULL), 'u');
@@ -338,9 +449,7 @@ int main()
           std::cout << "Please enter your choice: ";
           std::cin >> choice;
           if (choice >= players[i]->numActions())
-          {
             std::cout << "Please enter a valid choice.";
-          }
           else
           {
             if (choice == -1)
@@ -350,28 +459,77 @@ int main()
               switch (choice)
               {
                 case 0:
+                {
+                  do {
+                    std::cout << "Your movement options are:\n";
+                    std::cout << players[i]->getLocation()->printRoomOptions(wall);
+                    std::cout << "Enter the direction you wish to move, enter 0 to go back: ";
+                    std::cin >> choice;
+                    int error;
+                    if (choice > players[i]->getLocation()->numOptions)
+                      std::cout << "Please enter a valid choice.";
+                    else
+                    {
+                      switch (choice)
+                      {
+                        case 1: //UP
+                        {
+                          error = move(rooms, players[i]->getLocation(), wall, 'u');
+                          break;
+                        }
+                        case 2: //DOWN
+                        {
+                          error = move(rooms, players[i]->getLocation(), wall, 'd');
+                          break;
+                        }
+                        case 3:
+                        {
+                          error = move(rooms, players[i]->getLocation(), wall, 'l');
+                          break; //LEFT
+                        }
+                        case 4:
+                        {
+                          error = move(rooms, players[i]->getLocation(), wall, 'r');
+                          break; //RIGHT
+                        }
+                      }
+
+                      if (error == 1)
+                      {
+                        std::cout << "There are no more remaining ";
+                        if (players[i]->getLocation()->isBasement()) std::cout << "BASEMENT ";
+                        else if (players[i]->getLocation()->isGround()) std::cout << "GROUND FLOOR ";
+                        else if (players[i]->getLocation()->isUpper()) std::cout << "UPPER FLOOR ";
+                        else if (players[i]->getLocation()->isRoof()) std::cout << "ROOF ";
+                        std::cout << "tiles left in the deck,\nPlease choose another option.\n" << std::endl;
+                      }
+                    }
+                  } while (choice != 0) ;
+
+
 
                   break;
-
+                }
                 case 1:
-
+                {
                   break;
-
+                }
                 case 2:
-
+                {
                   break;
-
+                }
                 case 3:
-
+                {
                   break;
-
+                }
                 case 4:
-
+                {
                   break;
-
+                }
                 default:
-
+                {
                   break;
+                }
               }
             }
           }
