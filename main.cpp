@@ -13,6 +13,12 @@ int static numOfRooms = 61;
 int static numOfEvents = 56;
 int static numOfOmens = 21;
 int static numOfItems = 34;
+int static baseSideOfFloor = 25;
+
+Room*** basementF;
+Room*** groundF;
+Room*** upperF;
+Room*** roofF;
 
 //Error checking to ensure user enters a valid integer input
 void obtainValidNum(int &in)
@@ -157,6 +163,13 @@ void pickCharacter(Character** &players, std::string* &choices, int i, const int
   }
 }
 
+void fillFloor(Room*** &f)
+{
+  f = new Room**[baseSideOfFloor];
+  for (int i = 0; i < baseSideOfFloor; i++)
+    f[i] = new Room*[baseSideOfFloor];
+}
+
 //helper method to fill a passed string array with file input (Helper to shuffle)
 void fillStack(std::ifstream &in, std::string* &l, int size)
 {
@@ -262,13 +275,97 @@ Room* newRoom(const std::string &name, Room* &wall)
     if (tmp[2] == 1) l = wall;
     if (tmp[3] == 1) r = wall;
 
-    Room* next = new Room(nm, u, d, l, r);
+    Room* next = new Room(nm, u, d, l, r, -1, -1);
 
     file.close();
     return next;
 }
 
-int move(std::list<std::pair<std::string, std::string> > &rooms, Room* rm, Room* &wall, char dir)
+void optimizeRoom(Room* &rmR, Room* &rmC, Room* &wall, Room*** &floor)
+{
+  int numValid, numMax = 0, maxD = 0;
+  Room* tmp;
+  Room* u = rmR->up;
+  Room* d = rmR->down;
+  Room* l = rmR->left;
+  Room* r = rmR->right;
+
+  for (int i = 0; i < 4; i++)
+  {
+    numValid = 0;
+    //upcheck
+    if (u != wall && floor[rmR->row-1][rmR->col] != NULL)
+      if (floor[rmR->row-1][rmR->col]->down == NULL)
+        numValid++;
+    //downcheck
+    if (d != wall && floor[rmR->row+1][rmR->col] != NULL)
+      if (floor[rmR->row+1][rmR->col]->up == NULL)
+        numValid++;
+    //leftcheck
+    if (l != wall && floor[rmR->row][rmR->col-1] != NULL)
+      if (floor[rmR->row][rmR->col-1]->right == NULL)
+        numValid++;
+    //rightcheck
+    if (r != wall && floor[rmR->row][rmR->col+1] != NULL)
+      if (floor[rmR->row][rmR->col+1]->left == NULL)
+        numValid++;
+
+    if (numValid > numMax)
+    {
+      numMax = numValid;
+      maxD = i;
+    }
+
+    //rotating pointers
+    tmp = u;
+    u = l;
+    l = d;
+    d = r;
+    r = tmp;
+  }
+
+  switch (maxD)
+  {
+    case 0:
+    {
+      rmR->linkSurrounding(wall, floor);
+      break;
+    }
+    case 1:
+    {
+      tmp = rmR->up;
+      rmR->up = rmR->left;
+      rmR->left = rmR->down;
+      rmR->down = rmR->right;
+      rmR->right = tmp;
+      rmR->linkSurrounding(wall, floor);
+      break;
+    }
+    case 2:
+    {
+      tmp = rmR->up;
+      rmR->up = rmR->down;
+      rmR->down = tmp;
+      tmp = rmR->right;
+      rmR->right = rmR->left;
+      rmR->left = tmp;
+      rmR->linkSurrounding(wall, floor);
+      break;
+    }
+    case 3:
+    {
+      tmp = rmR->up;
+      rmR->up = rmR->right;
+      rmR->right = rmR->down;
+      rmR->down = rmR->left;
+      rmR->left = tmp;
+      rmR->linkSurrounding(wall, floor);
+      break;
+    }
+  }
+}
+
+Room* move(std::list<std::pair<std::string, std::string> > &rooms, Room* rm, Room* &wall, char dir)
 {
   rooms.push_back(std::make_pair("end", "end"));
 
@@ -284,30 +381,31 @@ int move(std::list<std::pair<std::string, std::string> > &rooms, Room* rm, Room*
     case 'u':
     {
       if (rm->up != NULL && rm->up != wall)
-      { rm = rm->up; return 0; }
+      { return rm->up; }
     }
     case 'd':
     {
       if (rm->down != NULL && rm->down != wall)
-      { rm = rm->down; return 0; }
+      { return rm->down; }
     }
     case 'r':
     {
       if (rm->right != NULL && rm->right != wall)
-      { rm = rm->right; return 0; }
+      { return rm->right; }
     }
     case 'l':
     {
       if (rm->left != NULL && rm->left != wall)
-      { rm = rm->left; return 0; }
+      { return rm->left; }
     }
   }
 
+  Room*** floorGrid;
   //second case regarding discovering a new room
-  if (rm->isBasement()) floor = 3;
-  else if (rm->isGround()) floor = 2;
-  else if (rm->isUpper()) floor = 1;
-  else if (rm->isRoof()) floor = 0;
+  if (rm->isBasement()) { floor = 3; floorGrid = basementF; }
+  else if (rm->isGround()) { floor = 2; floorGrid = groundF; }
+  else if (rm->isUpper()) { floor = 1; floorGrid = upperF; }
+  else if (rm->isRoof()) { floor = 0; floorGrid = roofF; }
 
   //searching list for a discoverable room
   if (floor == 0)
@@ -327,7 +425,7 @@ int move(std::list<std::pair<std::string, std::string> > &rooms, Room* rm, Room*
 
   //if no discoverable rooms left
   if (itr == end)
-    return 1;
+    return NULL;
 
   rooms.erase(end);
 
@@ -335,8 +433,10 @@ int move(std::list<std::pair<std::string, std::string> > &rooms, Room* rm, Room*
 
   rm->linkRooms(discovered, dir);
 
+  optimizeRoom(discovered, rm, wall, floorGrid);
+
   rooms.erase(itr);
-  return 0;
+  return discovered;
 
 }
 
@@ -350,6 +450,13 @@ void clearFloor(Room* &rm, Room* &prev)
 
   delete rm;
   rm = NULL;
+}
+
+void clearGrid(Room*** &f)
+{
+  for (int i = 0; i < baseSideOfFloor; i++)
+    delete[] f[i];
+  delete[] f;
 }
 
 //helper method to clean up allocated memory
@@ -397,17 +504,28 @@ int main()
   //========================================================================================= END OF CHARACTER SELECTION
   //GAME SETUP =========================================================================================================
   //Initialization of base rooms
-  Room* wall = new Room("Wall", NULL, NULL, NULL, NULL);
-  Room* roof = new Room("Roof Landing", NULL, NULL, NULL, NULL); roof->setR();
-  Room* upper = new Room("Upper Landing", NULL, NULL, NULL, NULL); upper->setU();
-  Room* ground = new Room("Front Entrance", NULL, wall, NULL, NULL); ground->setG();
-  Room* basement = new Room("Basement Landing", NULL, NULL, NULL, NULL); basement->setB();
+  fillFloor(basementF);
+  fillFloor(groundF);
+  fillFloor(upperF);
+  fillFloor(roofF);
+
+  Room* wall = new Room("Wall", NULL, NULL, NULL, NULL, -1, -1);
+  Room* roof = new Room("Roof Landing", NULL, NULL, NULL, NULL, 12, 12); roof->setR();
+  Room* upper = new Room("Upper Landing", NULL, NULL, NULL, NULL, 12, 12); upper->setU();
+  Room* ground = new Room("Front Entrance", NULL, wall, NULL, NULL, 10, 12); ground->setG();
+  Room* basement = new Room("Basement Landing", NULL, NULL, NULL, NULL, 12, 12); basement->setB();
   roof->setBelow(upper);
   upper->setAbove(roof);
-  ground->linkRooms(new Room("Foyer", NULL, NULL, NULL, NULL), 'u');
-  ground->up->linkRooms(new Room("Grand Staircase", wall, NULL, NULL, NULL), 'u');
+  ground->linkRooms(new Room("Foyer", NULL, NULL, NULL, NULL, 11, 12), 'u');
+  ground->up->linkRooms(new Room("Grand Staircase", wall, NULL, NULL, NULL, 12, 12), 'u');
   ground->up->up->setAbove(upper);
   upper->setBelow(ground->up->up);
+  roofF[12][12] = roof;
+  upperF[12][12] = upper;
+  groundF[10][12] = ground;
+  groundF[11][12] = ground->up;
+  groundF[12][12] = ground->up->up;
+  basementF[12][12] = basement;
 
   //Obtaining lists of cards and rooms, shuffling to begin game
   std::srand(std::time(0));
@@ -441,7 +559,7 @@ int main()
         moves = players[i]->Speed;
         do {
 
-          std::cout << "It's " << players[i]->name << "'s (Player " << i << ") turn." << std::endl;
+          std::cout << "It's " << players[i]->name << " (Player " << i << ")'s' turn." << std::endl;
           std::cout << "Your action options are:" << std::endl;
           std::cout << players[i]->printActions();
           std::cout << "Enter -1 to end your turn." << std::endl;
@@ -460,12 +578,20 @@ int main()
               {
                 case 0:
                 {
+                  if (moves == 0)
+                  {
+                    std::cout << "You are out of moves, you cannot continue moving." << std::endl;
+                    break;
+                  }
+
+                  Room* moved;
+
                   do {
                     std::cout << "Your movement options are:\n";
                     std::cout << players[i]->getLocation()->printRoomOptions(wall);
                     std::cout << "Enter the direction you wish to move, enter 0 to go back: ";
                     std::cin >> choice;
-                    int error;
+
                     if (choice > players[i]->getLocation()->numOptions)
                       std::cout << "Please enter a valid choice.";
                     else
@@ -474,27 +600,27 @@ int main()
                       {
                         case 1: //UP
                         {
-                          error = move(rooms, players[i]->getLocation(), wall, 'u');
+                          moved = move(rooms, players[i]->getLocation(), wall, 'u');
                           break;
                         }
                         case 2: //DOWN
                         {
-                          error = move(rooms, players[i]->getLocation(), wall, 'd');
+                          moved = move(rooms, players[i]->getLocation(), wall, 'd');
                           break;
                         }
                         case 3:
                         {
-                          error = move(rooms, players[i]->getLocation(), wall, 'l');
+                          moved = move(rooms, players[i]->getLocation(), wall, 'l');
                           break; //LEFT
                         }
                         case 4:
                         {
-                          error = move(rooms, players[i]->getLocation(), wall, 'r');
+                          moved = move(rooms, players[i]->getLocation(), wall, 'r');
                           break; //RIGHT
                         }
                       }
 
-                      if (error == 1)
+                      if (moved == NULL)
                       {
                         std::cout << "There are no more remaining ";
                         if (players[i]->getLocation()->isBasement()) std::cout << "BASEMENT ";
@@ -506,7 +632,9 @@ int main()
                     }
                   } while (choice != 0) ;
 
-
+                  players[i]->setRoom(moved);
+                  std::cout << "You have moved into the " << players[i]->getLocation()->name << "." << std::endl;
+                  moves--;
 
                   break;
                 }
@@ -533,7 +661,7 @@ int main()
               }
             }
           }
-        } while(choice != -1 && moves > 0);
+        } while(choice != -1);
 
 
       }
@@ -551,6 +679,10 @@ int main()
   clearFloor(upper, wall);
   clearFloor(ground, wall);
   clearFloor(basement, wall);
+  clearGrid(roofF);
+  clearGrid(upperF);
+  clearGrid(groundF);
+  clearGrid(basementF);
   deletePlayers(players, playerNum);
   //=============================================================================================== END OF GAME CLEANUP
 

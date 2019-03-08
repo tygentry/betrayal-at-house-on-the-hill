@@ -13,10 +13,11 @@ public:
   Room* above;
   std::string name;
   int numOptions;
+  int row, col;
 
   Room () {};
 
-  Room (const std::string &n, Room* u, Room* d, Room* l, Room* r)
+  Room (const std::string &n, Room* u, Room* d, Room* l, Room* r, int rw, int c)
   {
     name = n;
     up = u;
@@ -29,6 +30,7 @@ public:
     ground = false;
     upper = false;
     roof = false;
+    row = rw; col = c;
   }
 
   void setBelow(Room* &b) { below = b; }
@@ -39,6 +41,7 @@ public:
   void setR() { roof = true; }
 
   void linkRooms(Room* rm, char dir);
+  void linkSurrounding(Room* &wall, Room*** &floor);
   std::string printRoomOptions(Room* &wall);
 
   bool isBasement() { return basement; }

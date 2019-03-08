@@ -19,29 +19,69 @@ void Room::linkRooms(Room* rm, char dir)
     {
       up = rm;
       rm->down = this;
+      rm->row = row - 1;
+      rm->col = col;
       break;
     }
     case 'd':
     {
       down = rm;
       rm->up = this;
+      rm->row = row + 1;
+      rm->col = col;
       break;
     }
     case 'r':
     {
       right = rm;
       rm->left = this;
+      rm->row = row;
+      rm->col = col + 1;
       break;
     }
     case 'l':
     {
       left = rm;
       rm->right = this;
+      rm->row = row;
+      rm->col = col - 1;
       break;
     }
     default:
       std::cerr << "ERROR: Invalid Room Relationship" <<std::endl;
   }
+}
+
+void Room::linkSurrounding(Room* &wall, Room*** &floor)
+{
+  //uplink
+  if (up != wall && floor[row-1][col] != NULL)
+    if (floor[row-1][col]->down == NULL)
+    {
+      up = floor[row-1][col];
+      floor[row-1][col]->down = up;
+    }
+  //downlink
+  if (down != wall && floor[row+1][col] != NULL)
+    if (floor[row+1][col]->up == NULL)
+    {
+      down = floor[row+1][col];
+      floor[row+1][col]->up = down;
+    }
+  //leftlink
+  if (left != wall && floor[row][col-1] != NULL)
+    if (floor[row][col-1]->right == NULL)
+    {
+      left = floor[row][col-1];
+      floor[row][col-1]->right = left;
+    }
+  //rightlink
+  if (right != wall && floor[row][col+1] != NULL)
+    if (floor[row][col+1]->left == NULL)
+    {
+      right = floor[row][col+1];
+      floor[row][col+1]->left = right;
+    }
 }
 
 std::string Room::printRoomOptions(Room* &wall)
