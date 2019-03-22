@@ -1,0 +1,7 @@
+Translation Convention for Room Textfiles
+Name $
+
+Bitstring containing doors in pattern of (0 = wall, 1 = door)
+up, down, left, right
+
+Indicator for what cards or other effects exist in file, with the ending denoted by 'n'

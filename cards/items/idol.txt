@@ -1,0 +1,4 @@
+0
+"Perhaps it's chosen you for some greater purpose. Like human sacrifice."
+
+Once per turn, you can rub the idol before making any trait, combat, or event roll to add 2 dice to the roll (to a maximum of 8 dice). Each time you do, lose 1 Sanity.

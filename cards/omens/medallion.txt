@@ -1,0 +1,4 @@
+0
+"A medallion inscribed with a pentagram."
+
+You are immune to the effects of the Pentagram Chamber, Crypt, and Graveyard.

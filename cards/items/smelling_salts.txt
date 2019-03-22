@@ -1,0 +1,5 @@
+0
+"Whew, that's a lungful."
+
+If your or another living explorer's Knowledge is below its starting value, and you're in the same room, you can raise that trait to it's starting value by using the Smelling Salts.
+Discard this item after you use it.

@@ -1,0 +1,6 @@
+1
+"A nasty weapon. Needles and tubes extend from the handle... and plunge right into your veins."
+
+You roll 3 additional dice (maximum of 8 dice) when making a Might attack with ths weapon. If you do, lose one Speed.
+You can't use another weapon while you're using this one.
+This item can't be traded or dropped. If it's stolen, take 2 dice of physical damage.

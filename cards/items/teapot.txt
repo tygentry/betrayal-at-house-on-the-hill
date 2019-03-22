@@ -1,0 +1,5 @@
+0
+"A porcelain teapot with a motif of delicate pink flowers. It grants wishes, at a price."
+
+Once during your turn, when an explorer in your room (including yourself) takes physical damage, you may draw an item card.
+If you are, or become the traitor, shuffle this card back into the item stack.

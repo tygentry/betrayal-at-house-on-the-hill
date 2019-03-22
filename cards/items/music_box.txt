@@ -1,0 +1,6 @@
+0
+"A hand-crafted antique. It plays a haunting melody that gets stuck in your head."
+
+Once per turn, you can open or close the Music Box.
+While the Music Box is open, any explorer or monster with a Sanity trait that enters or starts its turn in the same room must make a Sanity roll of 4+. If the roll fails, the explorer or onster ends its turn as it's mesmerized by the music.
+If an explorer or monster carrying the Music Box is mesmerized, it drops the Music Box. If the Music Box is open when it is dropped, it remains open.

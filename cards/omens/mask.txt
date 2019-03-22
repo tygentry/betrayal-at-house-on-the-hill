@@ -1,0 +1,8 @@
+0
+"A somber mask to hide your intensions."
+
+Once during your turn, you can attempt a Sanity roll to use the Mask:
+4+ You can put on or take off the Mask.
+If you put on the Mask, gain 2 Knowledge and lose 2 Sanity.
+If you take off the Mask, gain 2 Sainty and lose 2 Knowledge.
+0-3 You can't use the Mask this turn.

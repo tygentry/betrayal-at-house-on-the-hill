@@ -1,0 +1,4 @@
+0
+"Helping yourself has never seemed so easy."
+
+When you are in the same room as another explorer, you can discard this item to take any item that explorer is carrying.

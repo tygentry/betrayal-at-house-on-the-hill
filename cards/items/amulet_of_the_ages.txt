@@ -1,0 +1,5 @@
+0
+"Ancient silver and inlaid gems, inscribed with blessings."
+
+Gain 1 Might, 1 Speed, 1 Knowledge, and 1 Sanity now.
+Lose 3 Might, 3 Speed, 3 Knowledge, and 3 Sanity if you lose the Amulet.

@@ -1,0 +1,4 @@
+Study $
+0101
+odn
+// Once per game, if you end your turn here, put your exploere token here and gain 1 mental trait

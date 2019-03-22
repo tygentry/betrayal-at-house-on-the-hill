@@ -1,0 +1,7 @@
+2
+"It crossed your path, and you're supposed to have bad luck. But maybe you crossed its path, and it's the one that isn't too happy about it. Now it accompanies you."
+
+You may call on the Cat for luck before your trait roll. Roll 1 die:
+0 Subtract 2 from the result of that trait roll.
+1+ Add 2 to the result of the trait roll.
+This omen cannot be dropped, traded, or stolen.

@@ -1,0 +1,8 @@
+0
+"A brass bell that makes a resonant clang. Also known as the Bells of Ligma."
+
+Gain 1 Sanity now.
+Lose 1 Sanity if you ever lose the Bell.
+Once during your turn after the haunt is revealed, you can attempt a Sanity roll to use the Bell:
+5+ Move any number of unimpeded heroes 1 space closer to you.
+0-4 The traitor can move any number of monsters 1 space closer to you. (If you are the traitor, this result has no effect.) If there is no traitor, all monsters move 1 space closer to you.

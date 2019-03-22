@@ -1,0 +1,9 @@
+0
+"The old and crazy woman said you should drink this potion tha glows with an amber light. Maybe that's how she got so old and crazy."
+
+Once on your turn, you may drink from the Vial. Roll 2 dice:
+0 Poison! Take 2 points of physical damage.
+1 Visions and dreams. Take 2 points of mental damage. Draw an item card.
+2 Failed experiment. No effect.
+3 Invigorating tonic. Gain 1 in any physical trait.
+4 The blood of something unknown. Gain 1 in each trait but Sanity. Loose 2 Sanity.

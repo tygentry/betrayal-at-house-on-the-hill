@@ -1,0 +1,4 @@
+0
+"It changes as you look at it, showing different rooms in this house. Probably this house..."
+
+When discovering  room, you may discard the first drawn room tile and discover the next eligible room in the room stack instead.

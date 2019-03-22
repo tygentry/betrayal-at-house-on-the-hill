@@ -1,0 +1,12 @@
+0
+"An opaque vial containing a black liquid."
+
+Once during your turn after the haunt is revealed, you can roll 3 dice and drink from the Bottle:
+6 Choose a room and put your explorer there.
+5 Gain 2 Might and 2 Speed.
+4 Gain 2 Knowledge and 2 Sanity.
+3 Gain 1 Knowledge and lose 1 Might.
+2 Lose 2 Knowledge and 2 Sanity.
+1 Lose 2 Might and 2 Speed.
+0 Lose 2 from each trait.
+Discard this item after you use it.

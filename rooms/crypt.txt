@@ -1,0 +1,4 @@
+Crypt $
+1000
+en
+//If you end your turn here, take 1 point of mental damage.

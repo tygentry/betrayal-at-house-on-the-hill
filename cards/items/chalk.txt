@@ -1,0 +1,4 @@
+0
+"A simple drawing stick made of ground bone and wax."
+
+You may roll Knowledge instead of Might on defense rolls.

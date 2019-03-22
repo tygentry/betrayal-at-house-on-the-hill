@@ -1,0 +1,4 @@
+Library $
+0110
+en
+// Once per game, if you end your turn here, gain 1 Knowledge.

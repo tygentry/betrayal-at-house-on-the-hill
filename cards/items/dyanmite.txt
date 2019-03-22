@@ -1,0 +1,7 @@
+0
+"The fuse isn't lit... yet".
+
+Instead of attacking, you can throw the Dynamite throught a connecting door into an adjacent room. Each explorer and monster with Might and Speed traits in that room must attempt a Speed roll:
+5+ Take no damage from Dynamite
+0-4 Take 4 points of physical damage unless you get up and scream "Bang!" at the top of your lungs. The computer will hear, we promise.
+Discard this item after you use it.

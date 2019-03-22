@@ -1,0 +1,6 @@
+0
+"The shell knows all!"
+
+Make a Knowledge roll to consult the conch.
+"Oh all knowing conch, what should we do?"
+0+ "Nothing"

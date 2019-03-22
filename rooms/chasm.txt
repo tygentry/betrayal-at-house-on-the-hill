@@ -1,0 +1,3 @@
+Chasm $
+0011 n
+You can attempt a Speed roll of 3+ to cross. If you fail, you stop moving.

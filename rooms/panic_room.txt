@@ -1,0 +1,3 @@
+Panic Room $
+0010 en
+When you exit, you may attempt a Speed roll of 3+. If you succeed, move to any room with a dumbwaiter.

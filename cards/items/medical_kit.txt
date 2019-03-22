@@ -1,0 +1,9 @@
+0
+"A doctor's bag, depleted in some critical resources."
+
+Once during your turn, you can attempt a Knowledge roll to heal yourself or another explorer in the same room:
+8+ Gain up to 3 points of physical traits.
+6-7 Gain up to 2 points of physical traits.
+4-5 Gain 1 point in a physical trait.
+0-3 Nothing happens.
+You can't raise a trait above its starting value with the Medical Kit.

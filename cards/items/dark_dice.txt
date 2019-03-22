@@ -1,0 +1,11 @@
+0
+"Are you feeling lucky, punk?"
+
+Once per turn you can roll 3 dice:
+6 Move to the location of any explorer not revealed as a traitor.
+5 Move one other explorer in the sae room into an adjacent room.
+4 Gain 1 in a physical trait.
+3 Immediately move into an adjacent room (no movement cost)
+2 Gain 1 in a mental trait.
+1 Drawn an event card.
+0 Reduce all your traits to the lowest value above the skull symbol. Discard the Dark Dice.

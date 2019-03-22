@@ -1,0 +1,3 @@
+Storeroom $
+1000
+in

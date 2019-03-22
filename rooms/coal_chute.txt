@@ -1,0 +1,4 @@
+Coal Chute $
+1000
+n
+// One-way slide to Basement Landing

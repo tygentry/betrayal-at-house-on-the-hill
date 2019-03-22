@@ -2,8 +2,10 @@
 
 #include "room.h"
 
-void Room::linkRooms(Room* rm, char dir)
+//function to link a passed room to the current room object in a given direction
+void Room::linkRooms(Room* rm, char dir, Room* wall)
 {
+  //matching the same floor
   if (rm->isBasement())
     setB();
   else if (rm->isGround())
@@ -13,12 +15,13 @@ void Room::linkRooms(Room* rm, char dir)
   else if (rm->isRoof())
     setR();
 
+  //depending on direction, links the correct pointers
   switch (dir)
   {
     case 'u':
     {
       up = rm;
-      rm->down = this;
+      if (rm->down != wall) rm->down = this;
       rm->row = row - 1;
       rm->col = col;
       break;
@@ -26,7 +29,7 @@ void Room::linkRooms(Room* rm, char dir)
     case 'd':
     {
       down = rm;
-      rm->up = this;
+      if (rm->up != wall) rm->up = this;
       rm->row = row + 1;
       rm->col = col;
       break;
@@ -34,7 +37,7 @@ void Room::linkRooms(Room* rm, char dir)
     case 'r':
     {
       right = rm;
-      rm->left = this;
+      if (rm->left != wall) rm->left = this;
       rm->row = row;
       rm->col = col + 1;
       break;
@@ -42,7 +45,7 @@ void Room::linkRooms(Room* rm, char dir)
     case 'l':
     {
       left = rm;
-      rm->right = this;
+      if (rm->right != wall) rm->right = this;
       rm->row = row;
       rm->col = col - 1;
       break;
@@ -52,6 +55,7 @@ void Room::linkRooms(Room* rm, char dir)
   }
 }
 
+//method to link a room to all surrounding rooms based on floor pointer
 void Room::linkSurrounding(Room* &wall, Room*** &floor)
 {
   //uplink
@@ -84,11 +88,15 @@ void Room::linkSurrounding(Room* &wall, Room*** &floor)
     }
 }
 
+//helper function to print out possible movement options for a given room
+//only prints if the pointer is not a wall
 std::string Room::printRoomOptions(Room* &wall)
 {
+  //declaring initial variables
   std::string out = "";
   int count = 1;
 
+  //up options
   if (up != wall)
   {
     out += "   " + std::to_string(count);
@@ -98,6 +106,7 @@ std::string Room::printRoomOptions(Room* &wall)
     else
       out += ") Enter the " + up->name + " (UP)\n";
   }
+  //down options
   if (down != wall)
   {
     out += "   " + std::to_string(count);
@@ -107,6 +116,7 @@ std::string Room::printRoomOptions(Room* &wall)
     else
       out += ") Enter the " + down->name + " (DOWN)\n";
   }
+  //left options
   if (left != wall)
   {
     out += "   " + std::to_string(count);
@@ -116,6 +126,7 @@ std::string Room::printRoomOptions(Room* &wall)
     else
       out += ") Enter the " + left->name + " (LEFT)\n";
   }
+  //right options
   if (right != wall)
   {
     out += "   " + std::to_string(count);

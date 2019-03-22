@@ -1,0 +1,6 @@
+0
+"A memento of love on a thin gold chain"
+
+Gain 1 Sanity.
+Any time (not just once per turn) you take mental damage, take 1 less point of damage.
+If you lose this card, lose 1 Sanity. "You realize love is nothing but a chemical con job."

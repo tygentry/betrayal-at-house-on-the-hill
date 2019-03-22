@@ -1,0 +1,4 @@
+0
+"A perfect feather fluttering in your hand."
+
+Discard this item to change your next roll to any value from 0 to 8.

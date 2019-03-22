@@ -1,0 +1,5 @@
+0
+"A symbol of calm in an unsettling world."
+
+Gain 2 Sanity now.
+Lose 2 Sanity if you lose the Holy Symbol.

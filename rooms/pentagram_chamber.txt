@@ -1,0 +1,4 @@
+Pentagram Chamber $
+0001
+on
+// When exiting, you must attempt a Knowledge roll of 4+. If you fail, lose 1 Sanity (but continue moving).

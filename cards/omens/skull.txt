@@ -1,0 +1,4 @@
+0
+"A skull, cracked and missing teeth."
+
+If you take mental damage, you can take all of it as physical damage instead.

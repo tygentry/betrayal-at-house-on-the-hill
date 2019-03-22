@@ -1,0 +1,4 @@
+0
+"An old map of the house."
+
+When you roll for your movement or to enter, exit, or cross a room, you may choose your result. You may travel between rooms that have a dumbwaiter.

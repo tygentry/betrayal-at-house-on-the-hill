@@ -1,0 +1,3 @@
+Menagerie $
+0011 edn
+Once per game, if you end your turn here, gain 1 physical trait.

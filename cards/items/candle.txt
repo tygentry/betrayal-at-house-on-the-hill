@@ -1,0 +1,5 @@
+0
+"It makes the shadows move - at least, you hope *it's* doing that."
+
+If you draw an event card roll 1 additional die (maximum of 8 dice) for that event's trait rolls.
+If you have the Bell, Book, *and* Candle, gain 2 in each trait. The first time you lose one of those 3 items later in the game, lose 2 from each trait.

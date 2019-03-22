@@ -1,0 +1,16 @@
+SIS Man
+1
+0 1 2 4 4 4 4 4 4 3
+0 5 5 6 8 8 8 9 9 4
+0 3 4 4 5 5 6 6 6 4
+0 1 2 3 4 5 6 6 6 3
+23
+
+FORMAT
+Name
+Color
+SanityLine
+KnowledgeLine
+MightLine
+SpeedLine
+Age

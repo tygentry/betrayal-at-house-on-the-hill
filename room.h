@@ -17,6 +17,7 @@ public:
 
   Room () {};
 
+  //constructor
   Room (const std::string &n, Room* u, Room* d, Room* l, Room* r, int rw, int c)
   {
     name = n;
@@ -33,6 +34,7 @@ public:
     row = rw; col = c;
   }
 
+  //Setters
   void setBelow(Room* &b) { below = b; }
   void setAbove(Room* &a) { above = a; }
   void setB() { basement = true; }
@@ -40,10 +42,12 @@ public:
   void setU() { upper = true; }
   void setR() { roof = true; }
 
-  void linkRooms(Room* rm, char dir);
+  //basic functions
+  void linkRooms(Room* rm, char dir, Room* wall);
   void linkSurrounding(Room* &wall, Room*** &floor);
   std::string printRoomOptions(Room* &wall);
 
+  //checkers
   bool isBasement() { return basement; }
   bool isGround() { return ground; }
   bool isUpper() { return upper; }

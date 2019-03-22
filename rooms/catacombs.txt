@@ -1,0 +1,4 @@
+Catacombs $
+1100
+on
+//You can attempt a Sanity roll of 6+ to cross. If you fail, you stop moving.

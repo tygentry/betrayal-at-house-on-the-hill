@@ -1,0 +1,4 @@
+0
+"A battered ring with an incomprehensible inscription."
+
+If you attack an opponent that has a Sanity trait, you can attack with Sanity instead of Might. (Your opponent then defends with Sanity, and damage is mental instead of physical.)

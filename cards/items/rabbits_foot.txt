@@ -1,0 +1,4 @@
+0
+"Not so lucky for the rabit."
+
+Once per turn, you can reroll 1 die. You must keep the second roll.

@@ -1,0 +1,5 @@
+1
+"Rusted and well-used, someone took a hacksaw to the barrel. At least they left two good shells."
+
+When you draw this card, put 2 item tokens on this card. Discard a token to make a Speed 7 attack instead of a Might attack. When there are no tokens left, discard this item.
+You can't use another weapon while you're using this one.

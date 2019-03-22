@@ -1,0 +1,6 @@
+2
+"A raving, frothing madman."
+
+Gain 2 Might and lose 1 Sanity now.
+Lose 2 Might and gain 1 Sanity if you lose custody of the Madman.
+This omen can't be dropped, traded, or stolen.

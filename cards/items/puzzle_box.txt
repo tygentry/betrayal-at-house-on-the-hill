@@ -1,0 +1,6 @@
+0
+"There must be a way to open it."
+
+Once during your turn, you can attempt a Knowledge roll to open the box:
+6+ You open the box. Draw 2 item cards and discard the Puzzle Box.
+0-5 You just can't get it open. Perhaps watch Hellraiser.

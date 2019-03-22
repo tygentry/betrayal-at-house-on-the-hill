@@ -242,14 +242,19 @@ void shuffleR(std::pair<std::string, std::string>* &list, int size)
   }
 }
 
+//helper function to move method to create instance of Room and setting appropriate variables
+//also deals with any immediate actions necessary for a room discovery (i.e. item, event, and
+//omen cards)
 Room* newRoom(const std::string &name, Room* &wall)
 {
+    //initializing variables and opening room file
     std::ifstream file;
     std::string nm = "", tmp = "";
     int count = 0;
     std::string path = "rooms/" + name + ".txt";
     file.open(path);
 
+    //obtaining name
     while (tmp != "$")
     {
       if (count > 1)
@@ -259,6 +264,7 @@ Room* newRoom(const std::string &name, Room* &wall)
       count++;
     }
 
+    //initializing pointers
     Room* u;
     Room* d;
     Room* l;
@@ -268,21 +274,59 @@ Room* newRoom(const std::string &name, Room* &wall)
     l = NULL;
     r = NULL;
 
+    //obtaining determining door orientation on room
     file >> tmp;
+    if (tmp[0] == 0) u = wall;
+    if (tmp[1] == 0) d = wall;
+    if (tmp[2] == 0) l = wall;
+    if (tmp[3] == 0) r = wall;
 
-    if (tmp[0] == 1) u = wall;
-    if (tmp[1] == 1) d = wall;
-    if (tmp[2] == 1) l = wall;
-    if (tmp[3] == 1) r = wall;
-
+    //creating room
     Room* next = new Room(nm, u, d, l, r, -1, -1);
+
+    //dealing with various cards on room discovery
+    std::string card;
+    file >> card;
+    int i = 0;
+    while (card[i] != 'n')
+    {
+      switch (card[i])
+      {
+        case 'o': //omen
+        {
+
+          break;
+        }
+        case 'e': //event
+        {
+
+          break;
+        }
+        case 'i': //item
+        {
+
+          break;
+        }
+        case 'd': //dumbwaiter
+        {
+
+          break;
+        }
+      }
+      i++;
+    }
+
 
     file.close();
     return next;
 }
 
+//helper function to move method that determines most optimal orientation of the newly discovered room
+//optimal is defined as the most possible connected rooms
+//rotates and shifts pointers to correctly orientate room after optimization has been made
 void optimizeRoom(Room* &rmR, Room* &rmC, Room* &wall, Room*** &floor)
 {
+  //initializing variables
   int numValid, numMax = 0, maxD = 0;
   Room* tmp;
   Room* u = rmR->up;
@@ -290,6 +334,7 @@ void optimizeRoom(Room* &rmR, Room* &rmC, Room* &wall, Room*** &floor)
   Room* l = rmR->left;
   Room* r = rmR->right;
 
+  //loops through all 4 possible orientations to determine the number of connected possible rooms
   for (int i = 0; i < 4; i++)
   {
     numValid = 0;
@@ -310,11 +355,10 @@ void optimizeRoom(Room* &rmR, Room* &rmC, Room* &wall, Room*** &floor)
       if (floor[rmR->row][rmR->col+1]->left == NULL)
         numValid++;
 
+    //altering max if new max
     if (numValid > numMax)
-    {
-      numMax = numValid;
-      maxD = i;
-    }
+    { numMax = numValid;
+      maxD = i; }
 
     //rotating pointers
     tmp = u;
@@ -324,14 +368,16 @@ void optimizeRoom(Room* &rmR, Room* &rmC, Room* &wall, Room*** &floor)
     r = tmp;
   }
 
+  //switch to determine the orientation based on the optimized orientation
+  //shifts pointers to match
   switch (maxD)
   {
-    case 0:
+    case 0: // 0 degree rotated
     {
       rmR->linkSurrounding(wall, floor);
       break;
     }
-    case 1:
+    case 1: // 90 degrees rotated
     {
       tmp = rmR->up;
       rmR->up = rmR->left;
@@ -341,7 +387,7 @@ void optimizeRoom(Room* &rmR, Room* &rmC, Room* &wall, Room*** &floor)
       rmR->linkSurrounding(wall, floor);
       break;
     }
-    case 2:
+    case 2: // 180 degrees rotated
     {
       tmp = rmR->up;
       rmR->up = rmR->down;
@@ -352,7 +398,7 @@ void optimizeRoom(Room* &rmR, Room* &rmC, Room* &wall, Room*** &floor)
       rmR->linkSurrounding(wall, floor);
       break;
     }
-    case 3:
+    case 3: // 270 degrees rotated
     {
       tmp = rmR->up;
       rmR->up = rmR->right;
@@ -365,10 +411,16 @@ void optimizeRoom(Room* &rmR, Room* &rmC, Room* &wall, Room*** &floor)
   }
 }
 
+//main helper method to execute basic movement operation
+//searches the passed rooms list for the next possible room that fits criteria
+//creates that room using additional helper methods, and places it in the house
+//based on optimal positioning
 Room* move(std::list<std::pair<std::string, std::string> > &rooms, Room* rm, Room* &wall, char dir)
 {
+  //addition of end pair to prevent infinite looping
   rooms.push_back(std::make_pair("end", "end"));
 
+//declares iterators for comparison to prevent infinite looping
   std::list<std::pair<std::string, std::string> >::iterator end = rooms.begin();
   while (end->first != "end") end++;
   std::list<std::pair<std::string, std::string> >::iterator itr = rooms.begin();
@@ -408,6 +460,7 @@ Room* move(std::list<std::pair<std::string, std::string> > &rooms, Room* rm, Roo
   else if (rm->isRoof()) { floor = 0; floorGrid = roofF; }
 
   //searching list for a discoverable room
+  //special case regarding roof, includes checking for both roof and upper
   if (floor == 0)
     while (itr != end || (itr->second)[0] != 1 || (itr->second)[1] != 1)
     {
@@ -415,7 +468,7 @@ Room* move(std::list<std::pair<std::string, std::string> > &rooms, Room* rm, Roo
       rooms.pop_front();
       itr = rooms.begin();
     }
-  else
+  else //other basic cases for not roof
     while (itr != end || (itr->second)[floor] != 1)
     {
       rooms.push_back(std::make_pair(itr->first, itr->second));
@@ -429,10 +482,11 @@ Room* move(std::list<std::pair<std::string, std::string> > &rooms, Room* rm, Roo
 
   rooms.erase(end);
 
+  //create the new room and deal with room data
   Room* discovered = newRoom(itr->first, wall);
 
-  rm->linkRooms(discovered, dir);
-
+  //optimize positioning of the room, rotating if needed
+  rm->linkRooms(discovered, dir, wall);
   optimizeRoom(discovered, rm, wall, floorGrid);
 
   rooms.erase(itr);
@@ -516,8 +570,8 @@ int main()
   Room* basement = new Room("Basement Landing", NULL, NULL, NULL, NULL, 12, 12); basement->setB();
   roof->setBelow(upper);
   upper->setAbove(roof);
-  ground->linkRooms(new Room("Foyer", NULL, NULL, NULL, NULL, 11, 12), 'u');
-  ground->up->linkRooms(new Room("Grand Staircase", wall, NULL, NULL, NULL, 12, 12), 'u');
+  ground->linkRooms(new Room("Foyer", NULL, NULL, NULL, NULL, 11, 12), 'u', wall);
+  ground->up->linkRooms(new Room("Grand Staircase", wall, NULL, NULL, NULL, 12, 12), 'u', wall);
   ground->up->up->setAbove(upper);
   upper->setBelow(ground->up->up);
   roofF[12][12] = roof;

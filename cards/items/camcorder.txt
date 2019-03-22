@@ -1,0 +1,4 @@
+0
+"Left by a previous explorer, there seems to be something on the tape. You should *totally* watch it."
+
+When you draw this card, put a number of triangular Knowledge Roll tokens on this card equal to the number of explorers. An explorer in possession of the Camcorder can take a Knowledge Roll token to gain 1 Knowledge. You may not gain a Knowledge Roll token if you already have one. When there are no tokens left, discard this card and all those Knowledge roll tokens.

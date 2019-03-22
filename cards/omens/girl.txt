@@ -1,0 +1,6 @@
+2
+"A girl. Trapped. Alone. You free her!"
+
+Gain 1 Sanity and 1 Knowledge now.
+Lose 1 Sanity and Knowledge if you lose custody of the Girl.
+This omen can't be dropped, traded, or stolen.

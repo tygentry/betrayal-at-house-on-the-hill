@@ -1,0 +1,5 @@
+0
+"A board with letters and numbers to call the dead."
+
+Before you movev during your turn, you can look at the top tile of the room stack.
+If you use the Spirit Board after the haunt has been revealed, the traitor can move any number of monsters 1 space closer to you. (If you are the traitor, you don't have to move these monsters.) If there is no traitor, all monsters move 1 space closer to you.

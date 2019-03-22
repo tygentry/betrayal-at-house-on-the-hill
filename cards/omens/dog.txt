@@ -1,0 +1,8 @@
+2
+"This mangy dog seems friendly. At least you hope it is."
+
+Gain 1 Might and 1 Sanity now.
+Lose 1 Might and 1 Sanity if you lose custody of the Dog.
+Take a small monster token to represent the Dog. Put it in your room. (Use a token of a different color from other monsters, if any.) Once during your turn, the Dog can move to any explored oom up to 6 spaces away, using door and stairs, and tehn return. It can pick up, carry, and/or drop 1 item before it returns.
+The Dog isn't slowed by opponents. It can't use one-way passages or rooms that require a roll. It can't carry items that sow movement. 
+This omen can't be dropped, traded, or stolen.

@@ -1,0 +1,4 @@
+Widow's Walk $
+0111
+en
+//Add 1 t the results of Knowledge rolls here, and subtract 1 from the results of Speed rolls here (minimum 0).

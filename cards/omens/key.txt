@@ -1,0 +1,5 @@
+0
+"You've been wondering how to open all the locks in the house. The question is, why did they get locked in the first place?"
+
+Add 4 dice to trait rolls to open or take something from a card or room tile, such as the Locked Room, Safe, or Vault.
+You may pass through the Locked Room without removing a Lock. At the start of each turn, you may choose to put a Lock token on an unlocked door in the Locked room, if you are next to that door.

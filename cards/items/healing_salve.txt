@@ -1,0 +1,5 @@
+0
+"A sticky paste in a shallow bowl."
+
+You can apply the Healing Salve to yourself or another living explorer in the same room. If that explorer's Might or Speed is below it's starting value, raise one or both traits to its starting value.
+Discard this item after you use it.

@@ -1,0 +1,8 @@
+1
+"A twisted shard of iron covered in mysterious symbols and stained with blood."
+
+When making a Might attack with this weapon, you roll 3 extra dice (maximum of 8 dice), but you must make a knowledge roll first:
+6+ No effect.
+3-5 Lose 1 from a mental trait.
+0-2 The dagger twists in your hand! Take 2 dice of physical damage. You can't attack this turn.
+You can't use another weapon while using this one.

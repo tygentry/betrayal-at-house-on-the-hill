@@ -1,0 +1,7 @@
+1
+"An old, potent-looking weapon."
+
+You can use the revolver to attack with Speed instead of Might. (Your opponent then defends with Speed and takes physical damage.)
+Roll 1 additional die on your Speed attack roll (maximum of 8 dice).
+With the Revolver, you can attack anyone in the same room or within line of sight. If you attack someone in another room and lose, you don't take damage.
+You can't use another weapon while using this one.

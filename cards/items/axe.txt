@@ -1,0 +1,5 @@
+1
+"Very sharp."
+
+You roll 1 additional die (maximum of 8 dice) when making a Might attack with this weapon.
+You can't use another weapon while you're using this one.

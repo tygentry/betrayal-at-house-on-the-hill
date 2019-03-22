@@ -1,0 +1,5 @@
+0
+"A diary or lab notes? Ancient script or modern ravings?"
+
+Gain 2 Knowledge now. 
+Lose 2 Knowledge if you lose the Book.

@@ -1,0 +1,4 @@
+Furnace Room $
+1110
+on
+// If you end your turn here, take 1 point of physical damage.

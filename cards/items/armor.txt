@@ -1,0 +1,5 @@
+0
+"It's just prop armor from a Renaissance fair, but it's still metal."
+
+Any time (not just once per turn) you take physical damage, take 1 less point of damage.
+This item can't be stolen.

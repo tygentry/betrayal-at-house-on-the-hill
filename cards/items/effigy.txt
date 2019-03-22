@@ -1,0 +1,5 @@
+0
+"Handmade with care, the doll is dressed in a tiny copy of your own clothes."
+
+While you have the Effigy, add 1 die to all trait rolls, except when you attack or defend.
+If you ever lose or drop the Effigy, reduce each of your traits by 1 die.

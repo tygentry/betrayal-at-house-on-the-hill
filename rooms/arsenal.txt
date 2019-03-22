@@ -1,0 +1,3 @@
+Arsenal $
+0101 idn
+When you draw an item card in this room, draw 2 cards and choose 1 to keep. Discard the other.
