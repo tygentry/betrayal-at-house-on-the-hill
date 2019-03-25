@@ -2,18 +2,28 @@
 
 #include "room.h"
 
+// //method to search for next possible movement option for door attachment
+// void Room::attach(Room* rm, char dir, Room* wall)
+// {
+//   switch (dir)
+//   {
+//     case 'u':
+//
+//   }
+// }
+
 //function to link a passed room to the current room object in a given direction
 void Room::linkRooms(Room* rm, char dir, Room* wall)
 {
   //matching the same floor
-  if (rm->isBasement())
-    setB();
-  else if (rm->isGround())
-    setG();
-  else if (rm->isUpper())
-    setU();
-  else if (rm->isRoof())
-    setR();
+  if (isBasement())
+    rm->setB();
+  else if (isGround())
+    rm->setG();
+  else if (isUpper())
+    rm->setU();
+  else if (isRoof())
+    rm->setR();
 
   //depending on direction, links the correct pointers
   switch (dir)
@@ -22,6 +32,7 @@ void Room::linkRooms(Room* rm, char dir, Room* wall)
     {
       up = rm;
       if (rm->down != wall) rm->down = this;
+      //else this->attach(rm, dir, wall);
       rm->row = row - 1;
       rm->col = col;
       break;
@@ -59,33 +70,62 @@ void Room::linkRooms(Room* rm, char dir, Room* wall)
 void Room::linkSurrounding(Room* &wall, Room*** &floor)
 {
   //uplink
-  if (up != wall && floor[row-1][col] != NULL)
-    if (floor[row-1][col]->down == NULL)
+  if (floor[row-1][col] != NULL)
+  {
+    if (up != wall)
     {
-      up = floor[row-1][col];
-      floor[row-1][col]->down = up;
+      if (floor[row-1][col]->down == NULL || floor[row-1][col]->down == this)
+      {
+        up = floor[row-1][col];
+        floor[row-1][col]->down = this;
+      }
     }
+    else
+      floor[row-1][col]->down = wall;
+  }
+
   //downlink
-  if (down != wall && floor[row+1][col] != NULL)
-    if (floor[row+1][col]->up == NULL)
+  if (floor[row+1][col] != NULL)
+  {
+    if (down != wall)
     {
-      down = floor[row+1][col];
-      floor[row+1][col]->up = down;
+      if (floor[row+1][col]->up == NULL || floor[row+1][col]->up == this)
+      {
+        down = floor[row+1][col];
+        floor[row+1][col]->up = this;
+      }
     }
+    else
+      floor[row+1][col]->up = wall;
+  }
   //leftlink
-  if (left != wall && floor[row][col-1] != NULL)
-    if (floor[row][col-1]->right == NULL)
+  if (floor[row][col-1] != NULL)
+  {
+    if (left != wall)
     {
-      left = floor[row][col-1];
-      floor[row][col-1]->right = left;
+      if (floor[row][col-1]->right == NULL || floor[row][col-1]->right == this)
+      {
+        left = floor[row][col-1];
+        floor[row][col-1]->right = this;
+      }
     }
+    else
+      floor[row][col-1]->right = wall;
+  }
   //rightlink
-  if (right != wall && floor[row][col+1] != NULL)
-    if (floor[row][col+1]->left == NULL)
+  if (floor[row][col+1] != NULL)
+  {
+    if (right != wall)
     {
-      right = floor[row][col+1];
-      floor[row][col+1]->left = right;
+      if (floor[row][col+1]->left == NULL || floor[row][col+1]->left == this)
+      {
+        right = floor[row][col+1];
+        floor[row][col+1]->left = this;
+      }
     }
+    else
+      floor[row][col+1]->left = wall;
+  }
 }
 
 //helper function to print out possible movement options for a given room
@@ -99,7 +139,7 @@ std::string Room::printRoomOptions(Room* &wall)
   //up options
   if (up != wall)
   {
-    out += "   " + std::to_string(count);
+    out += "   1";
     count++;
     if (up == NULL)
       out += ") Discover a new room (UP)\n";
@@ -109,7 +149,7 @@ std::string Room::printRoomOptions(Room* &wall)
   //down options
   if (down != wall)
   {
-    out += "   " + std::to_string(count);
+    out += "   2";
     count++;
     if (down == NULL)
       out += ") Discover a new room (DOWN)\n";
@@ -119,7 +159,7 @@ std::string Room::printRoomOptions(Room* &wall)
   //left options
   if (left != wall)
   {
-    out += "   " + std::to_string(count);
+    out += "   3";
     count++;
     if (left == NULL)
       out += ") Discover a new room (LEFT)\n";
@@ -129,7 +169,7 @@ std::string Room::printRoomOptions(Room* &wall)
   //right options
   if (right != wall)
   {
-    out += "   " + std::to_string(count);
+    out += "   4";
     count++;
     if (right == NULL)
       out += ") Discover a new room (RIGHT)\n";

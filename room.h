@@ -31,6 +31,8 @@ public:
     ground = false;
     upper = false;
     roof = false;
+    dumbwaiter = false;
+    numOptions = 1;
     row = rw; col = c;
   }
 
@@ -41,11 +43,13 @@ public:
   void setG() { ground = true; }
   void setU() { upper = true; }
   void setR() { roof = true; }
+  void setDumbwaiter() { dumbwaiter = true; }
 
   //basic functions
   void linkRooms(Room* rm, char dir, Room* wall);
   void linkSurrounding(Room* &wall, Room*** &floor);
   std::string printRoomOptions(Room* &wall);
+  //void attach(char dir, Room* wall)
 
   //checkers
   bool isBasement() { return basement; }
