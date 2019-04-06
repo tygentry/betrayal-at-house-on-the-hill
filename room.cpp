@@ -31,8 +31,7 @@ void Room::linkRooms(Room* rm, char dir, Room* wall)
     case 'u':
     {
       up = rm;
-      if (rm->down != wall) rm->down = this;
-      //else this->attach(rm, dir, wall);
+      //if (rm->down != wall) rm->down = this;
       rm->row = row - 1;
       rm->col = col;
       break;
@@ -40,7 +39,7 @@ void Room::linkRooms(Room* rm, char dir, Room* wall)
     case 'd':
     {
       down = rm;
-      if (rm->up != wall) rm->up = this;
+      //if (rm->up != wall) rm->up = this;
       rm->row = row + 1;
       rm->col = col;
       break;
@@ -48,7 +47,7 @@ void Room::linkRooms(Room* rm, char dir, Room* wall)
     case 'r':
     {
       right = rm;
-      if (rm->left != wall) rm->left = this;
+      //if (rm->left != wall) rm->left = this;
       rm->row = row;
       rm->col = col + 1;
       break;
@@ -56,7 +55,7 @@ void Room::linkRooms(Room* rm, char dir, Room* wall)
     case 'l':
     {
       left = rm;
-      if (rm->right != wall) rm->right = this;
+      //if (rm->right != wall) rm->right = this;
       rm->row = row;
       rm->col = col - 1;
       break;
@@ -70,7 +69,7 @@ void Room::linkRooms(Room* rm, char dir, Room* wall)
 void Room::linkSurrounding(Room* &wall, Room*** &floor)
 {
   //uplink
-  if (floor[row-1][col] != NULL)
+  if (row > 0 && floor[row-1][col] != NULL)
   {
     if (up != wall)
     {
@@ -79,13 +78,21 @@ void Room::linkSurrounding(Room* &wall, Room*** &floor)
         up = floor[row-1][col];
         floor[row-1][col]->down = this;
       }
+      else
+      {
+        floor[row-1][col]->down = wall;
+        up = wall;
+      }
     }
     else
+    {
       floor[row-1][col]->down = wall;
+      up = wall;
+    }
   }
 
   //downlink
-  if (floor[row+1][col] != NULL)
+  if (row < 24 && floor[row+1][col] != NULL)
   {
     if (down != wall)
     {
@@ -94,12 +101,20 @@ void Room::linkSurrounding(Room* &wall, Room*** &floor)
         down = floor[row+1][col];
         floor[row+1][col]->up = this;
       }
+      else
+      {
+        floor[row+1][col]->up = wall;
+        down = wall;
+      }
     }
     else
+    {
       floor[row+1][col]->up = wall;
+      down = wall;
+    }
   }
   //leftlink
-  if (floor[row][col-1] != NULL)
+  if (col > 0 && floor[row][col-1] != NULL)
   {
     if (left != wall)
     {
@@ -108,12 +123,20 @@ void Room::linkSurrounding(Room* &wall, Room*** &floor)
         left = floor[row][col-1];
         floor[row][col-1]->right = this;
       }
+      else
+      {
+        floor[row][col-1]->right = wall;
+        left = wall;
+      }
     }
     else
+    {
       floor[row][col-1]->right = wall;
+      left = wall;
+    }
   }
   //rightlink
-  if (floor[row][col+1] != NULL)
+  if (col < 24 && floor[row][col+1] != NULL)
   {
     if (right != wall)
     {
@@ -122,9 +145,17 @@ void Room::linkSurrounding(Room* &wall, Room*** &floor)
         right = floor[row][col+1];
         floor[row][col+1]->left = this;
       }
+      else
+      {
+        floor[row][col+1]->left = wall;
+        right = wall;
+      }
     }
     else
+    {
       floor[row][col+1]->left = wall;
+      right = wall;
+    }
   }
 }
 
@@ -175,6 +206,26 @@ std::string Room::printRoomOptions(Room* &wall)
       out += ") Discover a new room (RIGHT)\n";
     else
       out += ") Enter the " + right->name + " (RIGHT)\n";
+  }
+  //above options
+  if (above != wall)
+  {
+    out += "   5";
+    count++;
+    if (above == NULL)
+      out += ") Discover a new room (ABOVE)\n";
+    else
+      out += ") Enter the " + above->name + " (ABOVE)\n";
+  }
+  //below options
+  if (below != wall)
+  {
+    out += "   6";
+    count++;
+    if (below == NULL)
+      out += ") Discover a new room (BELOW)\n";
+    else
+      out += ") Enter the " + below->name + " (BELOW)\n";
   }
 
   numOptions = count;

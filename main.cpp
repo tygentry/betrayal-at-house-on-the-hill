@@ -291,7 +291,7 @@ Room* newRoom(const std::string &name, Room* &wall)
     else numO++;
 
     //creating room
-    Room* next = new Room(nm, u, d, l, r, -1, -1);
+    Room* next = new Room(nm, u, d, l, r, -1, -1, wall);
     next->numOptions += numO;
 
     //dealing with various cards on room discovery
@@ -334,10 +334,10 @@ Room* newRoom(const std::string &name, Room* &wall)
 //helper function to move method that determines most optimal orientation of the newly discovered room
 //optimal is defined as the most possible connected rooms
 //rotates and shifts pointers to correctly orientate room after optimization has been made
-void optimizeRoom(Room* &rmR, Room* &rmC, Room* &wall, Room*** &floor)
+void optimizeRoom(Room* &rmR, Room* &rmC, Room* &wall, Room*** &floor, char dir)
 {
   //initializing variables
-  int numValid, numMax = 0, maxD = 0;
+  int nullValid, rmValid, connect, numMax = 0, maxD = 0;
   Room* tmp;
   Room* u = rmR->up;
   Room* d = rmR->down;
@@ -347,27 +347,61 @@ void optimizeRoom(Room* &rmR, Room* &rmC, Room* &wall, Room*** &floor)
   //loops through all 4 possible orientations to determine the number of connected possible rooms
   for (int i = 0; i < 4; i++)
   {
-    numValid = 0;
+    nullValid = 0;
+    rmValid = 0;
     //upcheck
-    if (u != wall && rmR->row > 0 && floor[rmR->row-1][rmR->col] != NULL)
-      if (floor[rmR->row-1][rmR->col]->down == NULL || floor[rmR->row-1][rmR->col]->down == rmR)
-        numValid++;
-    //downcheck
-    if (d != wall && rmR->row < 24 && floor[rmR->row+1][rmR->col] != NULL)
-      if (floor[rmR->row+1][rmR->col]->up == NULL || floor[rmR->row+1][rmR->col]->up == rmR)
-        numValid++;
-    //leftcheck
-    if (l != wall && rmR->col > 0 &&  floor[rmR->row][rmR->col-1] != NULL)
-      if (floor[rmR->row][rmR->col-1]->right == NULL || floor[rmR->row][rmR->col-1]->right == rmR)
-        numValid++;
-    //rightcheck
-    if (r != wall && rmR->col < 24 && floor[rmR->row][rmR->col+1] != NULL)
-      if (floor[rmR->row][rmR->col+1]->left == NULL || floor[rmR->row][rmR->col+1]->left == rmR)
-        numValid++;
+    if (u != wall && rmR->row > 0)
+    {
+      if (floor[rmR->row-1][rmR->col] == NULL)
+        nullValid++;
+      else
+        if (floor[rmR->row-1][rmR->col]->down == NULL || floor[rmR->row-1][rmR->col]->down == rmR)
+          rmValid++;
 
+      if (dir == 'd')
+        rmValid++;
+    }
+    //downcheck
+    if (d != wall && rmR->row < 24)
+    {
+      if (floor[rmR->row+1][rmR->col] == NULL)
+        nullValid++;
+      else
+        if (floor[rmR->row+1][rmR->col]->up == NULL || floor[rmR->row+1][rmR->col]->up == rmR)
+          rmValid++;
+
+      if (dir == 'u')
+        rmValid++;
+    }
+    //leftcheck
+    if (l != wall && rmR->col > 0)
+    {
+      if (floor[rmR->row][rmR->col-1] == NULL)
+        nullValid++;
+      else
+        if (floor[rmR->row][rmR->col-1]->right == NULL || floor[rmR->row][rmR->col-1]->right == rmR)
+          rmValid++;
+
+      if (dir == 'r')
+        rmValid++;
+    }
+    //rightcheck
+    if (r != wall && rmR->col < 24)
+    {
+      if (floor[rmR->row][rmR->col+1] == NULL)
+        nullValid++;
+      else
+        if (floor[rmR->row][rmR->col+1]->left == NULL || floor[rmR->row][rmR->col+1]->left == rmR)
+          rmValid++;
+
+      if (dir == 'l')
+        rmValid++;
+    }
+
+    connect = nullValid + (rmValid * 2);
     //altering max if new max
-    if (numValid > numMax)
-    { numMax = numValid;
+    if (connect > numMax)
+    { numMax = connect;
       maxD = i; }
 
     //rotating pointers
@@ -430,28 +464,40 @@ Room* move(std::list<std::pair<std::string, std::string> > &rooms, Room* rm, Roo
   //first case regarding moving into an already existing rooms
   switch (dir)
   {
-    case 'u':
+    case 'u': //UP
     {
       if (rm->up != NULL && rm->up != wall)
-      { return rm->up;}
+      { return rm->up; }
       break;
     }
-    case 'd':
+    case 'd': //DOWN
     {
       if (rm->down != NULL && rm->down != wall)
       { return rm->down; }
       break;
     }
-    case 'r':
+    case 'r': //RIGHT
     {
       if (rm->right != NULL && rm->right != wall)
       { return rm->right; }
       break;
     }
-    case 'l':
+    case 'l': //LEFT
     {
       if (rm->left != NULL && rm->left != wall)
       { return rm->left; }
+      break;
+    }
+    case 'a': //ABOVE
+    {
+      if (rm->above != NULL && rm->above != wall)
+      { return rm->above; }
+      break;
+    }
+    case 'b': //BELOW
+    {
+      if (rm->below != NULL && rm->below != wall)
+      { return rm->below; }
       break;
     }
   }
@@ -500,13 +546,8 @@ Room* move(std::list<std::pair<std::string, std::string> > &rooms, Room* rm, Roo
 
   //optimize positioning of the room, rotating if needed
   rm->linkRooms(discovered, dir, wall);
-  optimizeRoom(discovered, rm, wall, floorGrid);
+  optimizeRoom(discovered, rm, wall, floorGrid, dir);
   floorGrid[discovered->row][discovered->col] = discovered;
-
-  // if (rm->isBasement()) { basementF = floorGrid; }
-  // else if (rm->isGround()) { groundF = floorGrid; }
-  // else if (rm->isUpper()) { upperF = floorGrid; }
-  // else if (rm->isRoof()) { roofF = floorGrid; }
 
   rooms.erase(itr);
   return discovered;
@@ -571,15 +612,15 @@ int main()
   fillFloor(upperF);
   fillFloor(roofF);
 
-  Room* wall = new Room("Wall", NULL, NULL, NULL, NULL, -1, -1); roomVec.push_back(wall);
-  Room* roof = new Room("Roof Landing", NULL, NULL, NULL, NULL, 12, 12); roof->setR(); roomVec.push_back(roof);
-  Room* upper = new Room("Upper Landing", NULL, NULL, NULL, NULL, 12, 12); upper->setU(); roomVec.push_back(upper);
-  Room* ground = new Room("Front Entrance", NULL, wall, NULL, NULL, 14, 12); ground->setG(); roomVec.push_back(ground);
-  Room* basement = new Room("Basement Landing", NULL, NULL, NULL, NULL, 12, 12); basement->setB(); roomVec.push_back(basement);
+  Room* wall = new Room("Wall", NULL, NULL, NULL, NULL, -1, -1, NULL); roomVec.push_back(wall);
+  Room* roof = new Room("Roof Landing", NULL, NULL, NULL, NULL, 12, 12, wall); roof->setR(); roomVec.push_back(roof);
+  Room* upper = new Room("Upper Landing", NULL, NULL, NULL, NULL, 12, 12, wall); upper->setU(); roomVec.push_back(upper);
+  Room* ground = new Room("Front Entrance", NULL, wall, NULL, NULL, 14, 12, wall); ground->setG(); roomVec.push_back(ground);
+  Room* basement = new Room("Basement Landing", NULL, NULL, NULL, NULL, 12, 12, wall); basement->setB(); roomVec.push_back(basement);
   roof->setBelow(upper);
   upper->setAbove(roof);
-  ground->linkRooms(new Room("Foyer", NULL, NULL, NULL, NULL, 13, 12), 'u', wall); roomVec.push_back(ground->up);
-  ground->up->linkRooms(new Room("Grand Staircase", wall, NULL, wall, wall, 12, 12), 'u', wall); roomVec.push_back(ground->up->up);
+  ground->linkRooms(new Room("Foyer", NULL, NULL, NULL, NULL, 13, 12, wall), 'u', wall); roomVec.push_back(ground->up); ground->up->down = ground;
+  ground->up->linkRooms(new Room("Grand Staircase", wall, NULL, wall, wall, 12, 12, wall), 'u', wall); roomVec.push_back(ground->up->up); ground->up->up->down = ground->up;
   ground->up->up->setAbove(upper);
   upper->setBelow(ground->up->up);
   roofF[12][12] = roof;
@@ -696,7 +737,23 @@ int main()
                           moved = move(rooms, players[i]->getLocation(), wall, 'r');
                         break;
                       }
-                      case 0:
+                      case 5: //ABOVE
+                      {
+                        if (players[i]->getLocation()->above == wall)
+                          std::cout << "Please enter a valid choice." << std::endl;
+                        else
+                          moved = move(rooms, players[i]->getLocation(), wall, 'a');
+                        break;
+                      }
+                      case 6: //BELOW
+                      {
+                        if (players[i]->getLocation()->below == wall)
+                          std::cout << "Please enter a valid choice." << std::endl;
+                        else
+                          moved = move(rooms, players[i]->getLocation(), wall, 'b');
+                        break;
+                      }
+                      case 0: //EXIT
                         break;
                       default:
                       {

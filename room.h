@@ -18,15 +18,15 @@ public:
   Room () {};
 
   //constructor
-  Room (const std::string &n, Room* u, Room* d, Room* l, Room* r, int rw, int c)
+  Room (const std::string &n, Room* u, Room* d, Room* l, Room* r, int rw, int c, Room* wall)
   {
     name = n;
     up = u;
     down = d;
     left = l;
     right = r;
-    above = NULL;
-    below = NULL;
+    above = wall;
+    below = wall;
     basement = false;
     ground = false;
     upper = false;
