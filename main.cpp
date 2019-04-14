@@ -249,7 +249,7 @@ void shuffleR(std::pair<std::string, std::string>* &list, int size)
 //helper function to move method to create instance of Room and setting appropriate variables
 //also deals with any immediate actions necessary for a room discovery (i.e. item, event, and
 //omen cards)
-Room* newRoom(const std::string &name, Room* &wall)
+Room* newRoom(const std::string &name, Room* &wall, std::vector<std::list<std::string> > &cards)
 {
     //initializing variables and opening room file
     std::ifstream file;
@@ -295,7 +295,8 @@ Room* newRoom(const std::string &name, Room* &wall)
     next->numOptions += numO;
 
     //dealing with various cards on room discovery
-    std::string card;
+    std::string card, cardName = "";
+    std::list<std::string>::iterator itr;
     file >> card;
     int i = 0;
     while (card[i] != 'n')
@@ -304,17 +305,26 @@ Room* newRoom(const std::string &name, Room* &wall)
       {
         case 'o': //omen
         {
-
+          path = "cards/omens/";
+          itr = cards[1].begin();
+          cardName = *itr;
+          cards[1].erase(itr);
           break;
         }
         case 'e': //event
         {
-
+          path = "cards/events/";
+          itr = cards[0].begin();
+          cardName = *itr;
+          cards[0].erase(itr);
           break;
         }
         case 'i': //item
         {
-
+          path = "cards/items/";
+          itr = cards[2].begin();
+          cardName = *itr;
+          cards[2].erase(itr);
           break;
         }
         case 'd': //dumbwaiter
@@ -326,6 +336,12 @@ Room* newRoom(const std::string &name, Room* &wall)
       i++;
     }
 
+    if (cardName != "")
+    {
+      path += cardName + ".txt";
+      std::list<std::string> tmp; tmp.push_back(path);
+      cards.push_back(tmp);
+    }
 
     file.close();
     return next;
@@ -459,7 +475,7 @@ void optimizeRoom(Room* &rmR, Room* &rmC, Room* &wall, Room*** &floor, char dir)
 //searches the passed rooms list for the next possible room that fits criteria
 //creates that room using additional helper methods, and places it in the house
 //based on optimal positioning
-Room* move(std::list<std::pair<std::string, std::string> > &rooms, Room* rm, Room* &wall, char dir)
+Room* move(std::list<std::pair<std::string, std::string> > &rooms, Room* rm, Room* &wall, char dir, std::vector<std::list<std::string> > &cards)
 {
   //first case regarding moving into an already existing rooms
   switch (dir)
@@ -542,7 +558,7 @@ Room* move(std::list<std::pair<std::string, std::string> > &rooms, Room* rm, Roo
   rooms.erase(end);
 
   //create the new room and deal with room data
-  Room* discovered = newRoom(itr->first, wall);
+  Room* discovered = newRoom(itr->first, wall, cards);
 
   //optimize positioning of the room, rotating if needed
   rm->linkRooms(discovered, dir, wall);
@@ -642,6 +658,7 @@ int main()
   shuffle(unshuffled, numOfItems); std::list<std::string> items; fillList(items, unshuffled, numOfItems); delete[] unshuffled;
   file.open("roomsBase.txt");  unshuffledR = new std::pair<std::string, std::string>[numOfRooms]; fillStackR(file, unshuffledR, numOfRooms);  file.close();
   shuffleR(unshuffledR, numOfRooms); std::list<std::pair<std::string, std::string> > rooms; fillListR(rooms, unshuffledR, numOfRooms); delete[] unshuffledR;
+  std::vector<std::list<std::string> > cards; cards.push_back(events); cards.push_back(omens); cards.push_back(items);
 
   //starting all players in front Entrance
   for (int i = 0; i < playerNum; i++)
@@ -710,7 +727,7 @@ int main()
                         if (players[i]->getLocation()->up == wall)
                           std::cout << "Please enter a valid choice." << std::endl;
                         else
-                          moved = move(rooms, players[i]->getLocation(), wall, 'u');
+                          moved = move(rooms, players[i]->getLocation(), wall, 'u', cards);
                         break;
                       }
                       case 2: //DOWN
@@ -718,7 +735,7 @@ int main()
                         if (players[i]->getLocation()->down == wall)
                           std::cout << "Please enter a valid choice." << std::endl;
                         else
-                          moved = move(rooms, players[i]->getLocation(), wall, 'd');
+                          moved = move(rooms, players[i]->getLocation(), wall, 'd', cards);
                         break;
                       }
                       case 3: //LEFT
@@ -726,7 +743,7 @@ int main()
                         if (players[i]->getLocation()->left == wall)
                           std::cout << "Please enter a valid choice." << std::endl;
                         else
-                          moved = move(rooms, players[i]->getLocation(), wall, 'l');
+                          moved = move(rooms, players[i]->getLocation(), wall, 'l', cards);
                         break;
                       }
                       case 4: //RIGHT
@@ -734,7 +751,7 @@ int main()
                         if (players[i]->getLocation()->right == wall)
                           std::cout << "Please enter a valid choice." << std::endl;
                         else
-                          moved = move(rooms, players[i]->getLocation(), wall, 'r');
+                          moved = move(rooms, players[i]->getLocation(), wall, 'r', cards);
                         break;
                       }
                       case 5: //ABOVE
@@ -742,7 +759,7 @@ int main()
                         if (players[i]->getLocation()->above == wall)
                           std::cout << "Please enter a valid choice." << std::endl;
                         else
-                          moved = move(rooms, players[i]->getLocation(), wall, 'a');
+                          moved = move(rooms, players[i]->getLocation(), wall, 'a', cards);
                         break;
                       }
                       case 6: //BELOW
@@ -750,7 +767,7 @@ int main()
                         if (players[i]->getLocation()->below == wall)
                           std::cout << "Please enter a valid choice." << std::endl;
                         else
-                          moved = move(rooms, players[i]->getLocation(), wall, 'b');
+                          moved = move(rooms, players[i]->getLocation(), wall, 'b', cards);
                         break;
                       }
                       case 0: //EXIT
@@ -779,6 +796,19 @@ int main()
                       n = "\033[0;" + players[i]->color + "m" + players[i]->getLocation()->name + "\033[0m";
                       std::cout << "You have moved into the " << n << "." << std::endl;
                       moves--;
+
+                      if (cards.size() == 4)
+                      {
+                        std::list<std::string>::iterator tmp; tmp = cards[3].begin();
+                        std::ifstream card;
+                        card.open(*tmp);
+                        cards.pop_back();
+
+                        //INSERT CARD FUNCTIONALITY HERE
+
+                        moves = 0;
+                        card.close();
+                      }
                     }
                   } while (choice != 0) ;
 

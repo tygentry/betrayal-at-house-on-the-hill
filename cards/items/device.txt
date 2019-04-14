@@ -2,4 +2,4 @@
 "A jumble of wires and glass instruments used to measure things that are not of this world."
 
 At the end of your turn, if you are in the same room as an opponent, gain 1 Knowledge.
-Discard this card to dd 3 dice too your attack roll, but you may only use that attack to steal something.
+Discard this card to add 3 dice too your attack roll, but you may only use that attack to steal something.
