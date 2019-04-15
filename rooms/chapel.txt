@@ -1,4 +1,4 @@
 Chapel $
 1000
 en
-//Once per game, if you end you turn here, PRAY, gain 1 Sanity.
+Once per game, if you end you turn here, gain 1 Sanity.

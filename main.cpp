@@ -336,12 +336,20 @@ Room* newRoom(const std::string &name, Room* &wall, std::vector<std::list<std::s
       i++;
     }
 
+    //completing file path if card is detected
     if (cardName != "")
     {
       path += cardName + ".txt";
       std::list<std::string> tmp; tmp.push_back(path);
       cards.push_back(tmp);
     }
+
+    //if any flavor text is in the room, copy it over to the Room object for storage
+    std::string flavorTxt = "\033[0;33mNote:\033[0m";
+    while (file >> tmp)
+      flavorTxt += " " + tmp;
+
+    next->setText(flavorTxt);
 
     file.close();
     return next;
@@ -567,7 +575,16 @@ Room* move(std::list<std::pair<std::string, std::string> > &rooms, Room* rm, Roo
 
   rooms.erase(itr);
   return discovered;
+}
 
+//method to do the main work behind rolling traits, given number of die
+//and returns the number rolled randomly
+int rollDie(int numDie)
+{
+  int sum = 0;
+  for (int i = 0; i < numDie; i++)
+    sum += std::rand() % 3;
+  return sum;
 }
 
 void clearGrid(Room*** &f)
@@ -701,6 +718,7 @@ int main()
                 {
                   Room* moved = wall;
                   std::string n = "\033[0;" + players[i]->color + "m" + players[i]->getLocation()->name + "\033[0m";
+                  std::string flavorT;
 
                   do {
                     //check to see if more movement is possible
@@ -712,7 +730,11 @@ int main()
 
                     moved = wall;
 
+                    //informing user of all room data
                     std::cout << "You are in the " << n  << "." << std::endl;
+                    flavorT = players[i]->getLocation()->getText();
+                    if (flavorT != "")
+                      std::cout << flavorT << std::endl;
                     std::cout << "Your movement options are:" << std::endl;
                     std::cout << players[i]->getLocation()->printRoomOptions(wall);
                     std::cout << "You have " << moves << " Speed remaining." << std::endl;
@@ -792,11 +814,41 @@ int main()
                     {
                       roomVec.push_back(moved);
 
+                      //dumbwaiter extra case, adding mobility to dumbwaiter rooms
+                      if (moved->getDumbwaiter())
+                      {
+                        std::string dumb = "\n\033[0;33mNote: \033[0mThe dumbwaiter in this room allows you to move to ";
+                        if (moved->isBasement())
+                        {
+                          moved->setAbove(ground);
+                          dumb += "the Front Entrance (ABOVE).";
+                        }
+                        else if (moved->isGround())
+                        {
+                          moved->setAbove(upper);
+                          moved->setBelow(basement);
+                          dumb += "the Basement Landing (BELOW) and the Upper Landing (ABOVE).";
+                        }
+                        else if (moved->isUpper())
+                        {
+                          moved->setAbove(roof);
+                          moved->setBelow(ground);
+                          dumb += "the Front Entrance (BELOW) and the Roof Landing (ABOVE).";
+                        }
+                        else
+                        {
+                          moved->setBelow(upper);
+                          dumb += "the Upper Landing (BELOW).";
+                        }
+                        moved->concatText(dumb);
+                      }
+
                       players[i]->setRoom(moved);
                       n = "\033[0;" + players[i]->color + "m" + players[i]->getLocation()->name + "\033[0m";
                       std::cout << "You have moved into the " << n << "." << std::endl;
                       moves--;
 
+                      //if a card should be drawn by that room (4th object in cards should be the path to the file)
                       if (cards.size() == 4)
                       {
                         std::list<std::string>::iterator tmp; tmp = cards[3].begin();
@@ -806,7 +858,7 @@ int main()
 
                         //INSERT CARD FUNCTIONALITY HERE
 
-                        moves = 0;
+                        //moves = 0;
                         card.close();
                       }
                     }

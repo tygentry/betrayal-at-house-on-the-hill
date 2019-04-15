@@ -1,4 +1,4 @@
 Rookery $
 0011
 on
-// When discovered, search the room stack and choose a room tile to place in the house. Then shuffle that stack.
+When discovered, search the room stack and choose a room tile to place in the house. Then shuffle that stack.

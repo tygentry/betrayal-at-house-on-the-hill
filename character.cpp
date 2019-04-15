@@ -63,6 +63,26 @@ std::string Character::printActions()
   return out;
 }
 
+//helper function to add any additional actions to the action vector
+void Character::addAction(std::string name, std::string type, void* source)
+{
+  Action* tmp = new Action(name, type, source);
+  actions.push_back(tmp);
+}
+
+void Character::removeAction(std::string name)
+{
+  std::vector<Action*>::iterator itr = actions.begin();
+  while (itr != actions.end())
+  {
+    if ((*itr)->name == name)
+    {
+      actions.erase(itr);
+      itr = actions.begin();
+    }
+  }
+}
+
 //helper function to print a character and their current stats
 void Character::printChar()
 {

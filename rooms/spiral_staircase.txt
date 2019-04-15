@@ -1,4 +1,4 @@
 Spiral Staircase $
 1111
 n
-//You may spend 2 spaces of movement to move to any landing.
+You may spend 2 spaces of movement to move to any landing.

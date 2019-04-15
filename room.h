@@ -44,12 +44,17 @@ public:
   void setU() { upper = true; }
   void setR() { roof = true; }
   void setDumbwaiter() { dumbwaiter = true; }
+  void setText(std::string txt) { flavorText = txt; }
+
+  //Getters
+  bool getDumbwaiter() { return dumbwaiter; }
+  std::string getText() { return flavorText; }
 
   //basic functions
   void linkRooms(Room* rm, char dir, Room* wall);
   void linkSurrounding(Room* &wall, Room*** &floor);
   std::string printRoomOptions(Room* &wall);
-  //void attach(char dir, Room* wall)
+  void concatText(std::string t) { flavorText += t; }
 
   //checkers
   bool isBasement() { return basement; }
@@ -64,6 +69,7 @@ private:
   bool roof;
   bool dumbwaiter;
 
+  std::string flavorText;
 };
 
 #endif

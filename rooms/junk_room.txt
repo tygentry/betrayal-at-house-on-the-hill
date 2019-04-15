@@ -1,4 +1,4 @@
 Junk Room $
 1111
 on
-//When existing, you must attempt a Might roll of 3+. If you fail, lose 1 speend (but continue moving).
+When exiting, you must attempt a Might roll of 3+. If you fail, lose 1 Speed (but continue moving).

@@ -1,4 +1,4 @@
 Cave $
 1111
 en
-//If you enter and exit this room on your turn, lose 1 die from a physical trait.
+If you enter and exit this room on your turn, lose 1 die from a physical trait.

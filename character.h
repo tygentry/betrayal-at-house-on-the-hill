@@ -70,6 +70,8 @@ public:
   //Additional functions
   std::string printActions();
   int numActions() { return actions.size(); }
+  void addAction(std::string name, std::string type, void* source);
+  void removeAction(std::string name);
   void printChar();
   bool isDead();
 };

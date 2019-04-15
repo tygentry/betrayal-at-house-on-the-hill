@@ -1,4 +1,4 @@
 Graveyard $
 0100
 en
-//When existing, you must attempt a Sanity roll of 4+. If you fail, lose 1 Knowledge (but continue moving).
+When exiting, you must attempt a Sanity roll of 4+. If you fail, lose 1 Knowledge (but continue moving).

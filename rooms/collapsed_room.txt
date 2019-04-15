@@ -1,4 +1,4 @@
 Collapsed Room $
 1111
 n
-//You must attempt a Speed roll of 5+ to avoid falling. If you fail the roll, draw a basement tile and put it in play. You fail there and take 1 die of physical damage.
+You must attempt a Speed roll of 5+ to avoid falling. If you fail the roll, draw a basement tile and put it in play. You fall there and take 1 die of physical damage.
