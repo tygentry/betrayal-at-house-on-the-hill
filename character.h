@@ -37,6 +37,7 @@ private:
   int* SpeedLine;
   Room* location;
   std::vector<Action*> actions;
+  std::vector<std::pair<std::string, char> > inventory;
 
   //private helper methods
   void createLine(std::ifstream &file, int* &arr);
@@ -52,6 +53,10 @@ public:
   int Knowledge;
   int Might;
   int Speed;
+  int SanityStart;
+  int KnowledgeStart;
+  int MightStart;
+  int SpeedStart;
 
   //Constuctors and Destructor
   Character() {};

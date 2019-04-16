@@ -1,3 +1,3 @@
 Locked Room $
 1101 en
-Put a Lock token on each door of this room. To enter or exit through a locked door, attempt a Knowledge roll of 3+ to remove the Lock.
+Each door of this room begins Locked. To enter or exit through a locked door, attempt a Knowledge roll of 3+ to remove the Lock.

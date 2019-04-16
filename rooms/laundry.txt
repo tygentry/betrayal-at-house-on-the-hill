@@ -1,4 +1,4 @@
 Laundry $
 0110
 idn
-If you end your turn here, you may discard an item card to draw an item from the discard pile.
+If you end your turn here, you may discard an item card to draw a new item.

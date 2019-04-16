@@ -2,6 +2,7 @@
 #define room_h_
 
 #include <string>
+#include <vector>
 
 class Room {
 public:
@@ -14,6 +15,7 @@ public:
   std::string name;
   int numOptions;
   int row, col;
+  std::vector<int> statBuffTrack;
 
   Room () {};
 

@@ -16,13 +16,13 @@ Character::Character(std::ifstream &file)
   file >> first >> last >> color;
   name = "\033[0;" + color + "m" + first + " " + last + "\033[0m";
   createLine(file, SanityLine);
-  file >> Sanity;
+  file >> Sanity; SanityStart = Sanity;
   createLine(file, KnowledgeLine);
-  file >> Knowledge;
+  file >> Knowledge; KnowledgeStart = Knowledge;
   createLine(file, MightLine);
-  file >> Might;
+  file >> Might; MightStart = Might;
   createLine(file, SpeedLine);
-  file >> Speed >> age;
+  file >> Speed >> age; SpeedStart = Speed;
   //Adding default actions to characters
   actions.push_back(new Action("Move", "Char", this));
   actions.push_back(new Action("Attack", "Char", this));

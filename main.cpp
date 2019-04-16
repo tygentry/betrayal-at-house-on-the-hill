@@ -345,7 +345,7 @@ Room* newRoom(const std::string &name, Room* &wall, std::vector<std::list<std::s
     }
 
     //if any flavor text is in the room, copy it over to the Room object for storage
-    std::string flavorTxt = "\033[0;33mNote:\033[0m";
+    std::string flavorTxt = "\033[0;33mNote:3w2\033[0m";
     while (file >> tmp)
       flavorTxt += " " + tmp;
 
@@ -575,6 +575,300 @@ Room* move(std::list<std::pair<std::string, std::string> > &rooms, Room* rm, Roo
 
   rooms.erase(itr);
   return discovered;
+}
+
+void specialThruRoomCases(Character* &player)
+{
+  std::string room = player[i]->getLocation()->name;
+  Room* rmPtr = player[i]->getLocation();
+
+  } else if (room == "Attic") {
+
+  } else if (room == "Catacombs") {
+
+  } else if (room == "Cave") {
+
+  } else if (room == "Chasm") {
+
+  } else if (room == "Coal Chute") {
+
+  } else if (room == "Collapsed Room") {
+
+  } else if (room == "Dungeon") {
+
+  } else if (room == "Gallery") {
+
+  } else if (room == "Graveyard") {
+
+  } else if (room == "Junk Room") {
+
+  } else if (room == "Locked Room") {
+
+  } else if (room == "Mystic Elevator") {
+
+  } else if (room == "Panic Room") {
+
+  } else if (room == "Pentagram Chamber") {
+
+  } else if (room == "Rookery") {
+
+  } else if (room == "Spiral Staircase") {
+
+  } else if (room == "Stairs From Basement") {
+
+  } else if (room == "Tower") {
+
+  } else if (room == "Tree House") {
+
+  } else if (room == "Vault") {
+
+  } else if (room == "Widow's Walk") {
+  }
+}
+
+//special cases for Room events (i.e. entering, exiting, while in the room, etc.)
+void specialEndRoomCases(Character* &player, int playerNum, int moves)
+{
+  std::string room = player[i]->getLocation()->name;
+  Room* rmPtr = player[i]->getLocation();
+  int used = 0;
+  std::string choice;
+
+  if (room == "Arsenal") {
+
+
+
+  } else if (room == "Chapel") {
+    for (uint i = 0; i < rmPtr->statBuffTrack.size(); i++)
+      if (rmPtr->statBuffTrack[i] == playerNum)
+        used = 1;
+    if (moves == 0 && !used) { player->Sanity++;
+    rmPtr->statBuffTrack.push_back(playerNum);
+    std::cout << "You ended your turn in the Chapel, you gain 1 Sanity." << std::endl; }
+  } else if (room == "Crypt") {
+    if (moves == 0)
+    {
+      std::cout << "You ended your turn in the Crypt, would you like to take 1 damage in Knowledge or Sanity?\nEnter K or S to choose: ";
+      std::cin >> choice;
+      do {
+        if (choice == "K")
+        { player->Knowledge++; used = 0; }
+        else if (choice == "S")
+        { player->Sanity++; used = 0; }
+        else { used = 1; std::cout << "\nPlease enter a valid choice (K / S): ";
+      } while (used)
+    }
+  } else if (room == "Furnace Room") {
+    if (moves == 0)
+    {
+      std::cout << "You ended your turn in the Furnace Room, would you like to take 1 damage in Might or Speed?\nEnter M or S to choose: ";
+      std::cin >> choice;
+      do {
+        if (choice == "M")
+        { player->Might++; used = 0; }
+        else if (choice == "S")
+        { player->Speed++; used = 0; }
+        else { used = 1; std::cout << "\nPlease enter a valid choice (M / S): ";
+      } while (used)
+    }
+  } else if (room == "Gymnasium") {
+    for (uint i = 0; i < rmPtr->statBuffTrack.size(); i++)
+      if (rmPtr->statBuffTrack[i] == playerNum)
+        used = 1;
+    if (moves == 0 && !used) { player->Speed++;
+    rmPtr->statBuffTrack.push_back(playerNum);
+    std::cout << "You ended your turn in the Gymnasium, you gain 1 Speed." << std::endl; }
+  } else if (room == "Larder") {
+    for (uint i = 0; i < rmPtr->statBuffTrack.size(); i++)
+      if (rmPtr->statBuffTrack[i] == playerNum)
+        used = 1;
+    if (moves == 0 && !used) { player->Might++;
+    rmPtr->statBuffTrack.push_back(playerNum);
+    std::cout << "You ended your turn in the Larder, you gain 1 Might." << std::endl; }
+  } else if (room == "Laundry") {
+    if (moves == 0)
+    {
+      std::cout << "You ended your turn in the Laundry, would you like to discard an item to draw a new one?\nEnter Y or N to choose: ";
+      std::cin >> choice;
+      do {
+        if (choice == "Y")
+        { used = 0; }
+        else if (choice == "N")
+        { return; }
+        else { used = 1; std::cout << "\nPlease enter a valid choice (Y / N): ";
+      } while (used)
+      std::vector<std::pair<std::string, int> > items;
+      for (uint i = 0; i < player->inventory.size(); i++)
+        if (player->inventory[i].second == 'i')
+        {
+          used++;
+          items.push_back(std::make_pair(player->inventory[i]->first, i));
+        }
+
+      if (used == 0)
+      { std::cout << "You don't have any items to discard!" << std::endl; return; }
+
+      for (uint i = 0; i < items.size(); i++)
+        std::cout << "   " << i << ") " << items[i] << std::endl;
+      std::cout << "Enter -1 to exit, or the number of the item you wish to discard: ";
+      do {
+        std::cin >> used;
+        obtainValidNum(used);
+        if (used >= items.size() && used < -1) std::cout << "Please enter a valid choice: ";
+      } while (used >= items.size() && used < -1)
+      if (used == -1) return;
+
+      //Delete chosen item
+    }
+  } else if (room == "Library") {
+    for (uint i = 0; i < rmPtr->statBuffTrack.size(); i++)
+      if (rmPtr->statBuffTrack[i] == playerNum)
+        used = 1;
+    if (moves == 0 && !used) { player->Knowledge++;
+    rmPtr->statBuffTrack.push_back(playerNum);
+    std::cout << "You ended your turn in the Library, you gain 1 Knowledge." << std::endl; }
+  } else if (room == "Menagerie") {
+    for (uint i = 0; i < rmPtr->statBuffTrack.size(); i++)
+      if (rmPtr->statBuffTrack[i] == playerNum)
+        used = 1;
+    if (moves == 0 && !used)
+    {
+      std::cout << "You ended your turn in the Menagerie, would you like to buff Might or Speed?\nEnter M or S to choose: ";
+      std::cin >> choice;
+      do {
+        if (choice == "M")
+        { player->Might++; used = 0; std::cout << "You gained 1 Might." << std::endl; }
+        else if (choice == "S")
+        { player->Speed++; used = 0; std::cout << "You gained 1 Speed." << std::endl; }
+        else { used = 1; std::cout << "\nPlease enter a valid choice (M / S): ";
+      } while (used)
+      rmPtr->statBuffTrack.push_back(playerNum);
+    }
+  } else if (room == "Nursery") {
+    if (moves == 0)
+    {
+      std::cout << "You ended your turn in the Nursery, and because your Sanity is ";
+      if (player->Sanity > player->SanityStart)
+      { std::cout << "greater than your starting Sanity, you lose 1 Sanity." << std::endl; player->Sanity--; }
+      else if (player->Sanity < player->SanityStart)
+      { std::cout << "less than your starting Sanity, you gain 1 Sanity." << std::endl; player->Sanity++; }
+      else std::cout << "at your starting Sanity, nothing happens." << std::endl;
+    }
+  } else if (room == "Sewing Room") {
+    if (moves == 0 && (player->Might < player->MightStart || player->Speed < player->SpeedStart))
+    {
+      std::cout << "You ended your turn in the Sewing Room, would you like to discard an item to gain 1 in a physical trait below its starting value?\nEnter Y or N to choose: ";
+      std::cin >> choice;
+      do {
+        if (choice == "Y")
+        { used = 0; }
+        else if (choice == "N")
+        { return; }
+        else { used = 1; std::cout << "\nPlease enter a valid choice (Y / N): ";
+      } while (used)
+      std::vector<std::pair<std::string, int> > items;
+      for (uint i = 0; i < player->inventory.size(); i++)
+        if (player->inventory[i].second == 'i')
+        {
+          used++;
+          items.push_back(std::make_pair(player->inventory[i]->first, i));
+        }
+
+      if (used == 0)
+      { std::cout << "You don't have any items to discard!" << std::endl; return; }
+
+      for (uint i = 0; i < items.size(); i++)
+        std::cout << "   " << i << ") " << items[i] << std::endl;
+      std::cout << "Enter -1 to exit, or the number of the item you wish to discard: ";
+      do {
+        std::cin >> used;
+        obtainValidNum(used);
+        if (used >= items.size() && used < -1) std::cout << "Please enter a valid choice: ";
+      } while (used >= items.size() && used < -1)
+      if (used == -1) return;
+
+      //Delete chosen item
+
+      bool s = false, m = false;
+      std::cout << "Please choose which physical trait you would like to increase:" << std::endl;
+      if (player->Might < player->MightStart)
+        { std::cout << "Your Might is " << player->getMight() << << std::endl; m = true; }
+      if (player->Speed < player->SpeedStart)
+        { std::cout << "Your Speed is " << player->getSpeed() << std::endl; s = true; }
+
+      if (s && m)
+      {
+        std::cout << "Choose either M or S: ";
+        std::cin >> choice;
+        do {
+          if (choice == "M")
+          { player->Might++; used = 0; std::cout << "You gained 1 Might." << std::endl;}
+          else if (choice == "S")
+          { player->Speed++; used = 0; std::cout << "You gained 1 Speed." << std::endl;}
+          else { used = 1; std::cout << "\nPlease enter a valid choice (M / S): ";
+        } while (used)
+      }
+      else if (s)
+        { std::cout << "You gained 1 Speed." << std::endl; player->Speed++; }
+      else if (m)
+        { std::cout << "You gained 1 Might." << std::endl; player->Might++; }
+    }
+  } else if (room == "Solarium") {
+    if (moves == 0)
+    {
+      std::cout << "You ended your turn in the Solarium, would you like to discard an item to gain 1 Sanity?\nEnter Y or N to choose: ";
+      std::cin >> choice;
+      do {
+        if (choice == "Y")
+        { used = 0; }
+        else if (choice == "N")
+        { return; }
+        else { used = 1; std::cout << "\nPlease enter a valid choice (Y / N): ";
+      } while (used)
+      std::vector<std::pair<std::string, int> > items;
+      for (uint i = 0; i < player->inventory.size(); i++)
+        if (player->inventory[i].second == 'i')
+        {
+          used++;
+          items.push_back(std::make_pair(player->inventory[i]->first, i));
+        }
+
+      if (used == 0)
+      { std::cout << "You don't have any items to discard!" << std::endl; return; }
+
+      for (uint i = 0; i < items.size(); i++)
+        std::cout << "   " << i << ") " << items[i] << std::endl;
+      std::cout << "Enter -1 to exit, or the number of the item you wish to discard: ";
+      do {
+        std::cin >> used;
+        obtainValidNum(used);
+        if (used >= items.size() && used < -1) std::cout << "Please enter a valid choice: ";
+      } while (used >= items.size() && used < -1)
+      if (used == -1) return;
+
+      //Delete chosen item
+
+      std::cout << "You gained 1 Sanity." << std::endl;
+      player->Sanity++;
+    }
+  } else if (room == "Study") {
+    for (uint i = 0; i < rmPtr->statBuffTrack.size(); i++)
+      if (rmPtr->statBuffTrack[i] == playerNum)
+        used = 1;
+    if (moves == 0 && !used)
+    {
+      std::cout << "You ended your turn in the Study, would you like to buff Knowledge or Sanity?\n Enter K or S to choose: ";
+      std::cin >> choice;
+      do {
+        if (choice == "K")
+        { player->Knowledge++; used = 0; std::cout << "You gained 1 Knowledge." << std::endl;}
+        else if (choice == "S")
+        { player->Sanity++; used = 0; std::cout << "You gained 1 Sanity." << std::endl;}
+        else { used = 1; std::cout << "\nPlease enter a valid choice (K / S): ";
+      } while (used)
+      rmPtr->statBuffTrack.push_back(playerNum);
+    }
+  }
 }
 
 //method to do the main work behind rolling traits, given number of die
@@ -892,7 +1186,8 @@ int main()
             }
           }
         } while(choice != -1);
-
+        moves = 0;
+        specialEndRoomCases(players[i], i, moves);
 
       }
       else
@@ -900,7 +1195,7 @@ int main()
         std::cout << players[i]->name << "(Player " << i << ") is dead." << std::endl;
       }
     }
-    break;
+
   }
 
 
