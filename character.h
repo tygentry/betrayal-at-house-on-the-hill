@@ -46,6 +46,7 @@ public:
   //accessible stats
   std::string name;
   std::string color;
+  char lastDir;
 
   //made public to allow for increment and decrement along stat lines
   int age;
@@ -71,6 +72,8 @@ public:
 
   Room* getLocation() { return location; }
   void setRoom(Room* l) { location = l; }
+  void takePhys(int dmg);
+  void takeMent(int dmg);
 
   //Additional functions
   std::string printActions();

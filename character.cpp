@@ -37,6 +37,91 @@ Character::~Character()
     delete actions[i];
 }
 
+//processing taking any physical damage, allowing user to distribute damage however they wish
+void Character::takePhys(int dmg)
+{
+  std::string choice;
+  int used = 0;
+
+  for (; dmg > 0; dmg--)
+  {
+    std::cout << "Your Might: " << getMight() << std::endl;
+    std::cout << "Your Speed: " << getSpeed() << std::endl;
+    std::cout << "You have " << dmg << " physical damage left to take.\n" << std::endl;
+    if (Might - 1 > 0 && Speed - 1 > 0 && Might + Speed - dmg > 0)
+    {
+      std::cout << "You can choose to take damage in Might or Speed.\nEnter M or S to choose: ";
+      std::cin >> choice;
+      do {
+        if (choice == "M")
+        { Might--; used = 0; }
+        else if (choice == "S")
+        { Speed--; used = 0; }
+        else { used = 1; std::cout << "\nPlease enter a valid choice (M / S): ";
+      } while (used)
+    }
+    else if (Might - dmg > 0)
+    {
+      std::cout << "You took the damage in Might because any more damage in Speed would kill you." << std::endl;
+      Might -= dmg;
+    }
+    else if (Speed - dmg > 0)
+    {
+      std::cout << "You took the damage in Speed because any more damage in Might would kill you." << std::endl;
+      Speed -= dmg;
+    }
+    else
+    {
+      std::cout << "You have died." << std::endl;
+      isDead = true;
+    }
+  }
+}
+
+//processing taking any mental damage, allowing user to distribute damage however they wish
+void Character::takeMent(int dmg)
+{
+  std::string choice;
+  int used = 0;
+
+  for (; dmg > 0; dmg--)
+  {
+    std::cout << "Your Knowledge: " << getKnowledge() << std::endl;
+    std::cout << "Your Sanity: " << getSanity() << std::endl;
+    std::cout << "You have " << dmg << " mental damage left to take.\n" << std::endl;
+    if (Knowledge - 1 > 0 && Sanity - 1 > 0 && Knowledge + Sanity - dmg > 0)
+    {
+      std::cout << "You can choose to take damage in Knowledge or Sanity.\nEnter K or S to choose: ";
+      std::cin >> choice;
+      do {
+        if (choice == "K")
+        { Knowledge--; used = 0; }
+        else if (choice == "S")
+        { Sanity--; used = 0; }
+        else { used = 1; std::cout << "\nPlease enter a valid choice (K / S): ";
+      } while (used)
+    }
+    else if (Knowledge - dmg > 0)
+    {
+      std::cout << "You took the damage in Knowledge because any more damage in Sanity would kill you." << std::endl;
+      Knowledge -= dmg;
+      return;
+    }
+    else if (Sanity - dmg > 0)
+    {
+      std::cout << "You took the damage in Sanity because any more damage in Knowledge would kill you." << std::endl;
+      Sanity -= dmg;
+      return;
+    }
+    else
+    {
+      std::cout << "You have died." << std::endl;
+      isDead = true;
+      return;
+    }
+  }
+}
+
 //Helper method to print out all characters actions
 std::string Character::printActions()
 {

@@ -483,45 +483,47 @@ void optimizeRoom(Room* &rmR, Room* &rmC, Room* &wall, Room*** &floor, char dir)
 //searches the passed rooms list for the next possible room that fits criteria
 //creates that room using additional helper methods, and places it in the house
 //based on optimal positioning
-Room* move(std::list<std::pair<std::string, std::string> > &rooms, Room* rm, Room* &wall, char dir, std::vector<std::list<std::string> > &cards)
+Room* move(std::list<std::pair<std::string, std::string> > &rooms, Character* &player, Room* &wall, char dir, std::vector<std::list<std::string> > &cards, int &moves)
 {
+  Room* rm = player->getLocation();
+  specialThruRoomCases(player, moves, dir);
   //first case regarding moving into an already existing rooms
   switch (dir)
   {
     case 'u': //UP
     {
       if (rm->up != NULL && rm->up != wall)
-      { return rm->up; }
+      { player->lastDir = 'd'; return rm->up; }
       break;
     }
     case 'd': //DOWN
     {
       if (rm->down != NULL && rm->down != wall)
-      { return rm->down; }
+      { player->lastDir = 'u'; return rm->down; }
       break;
     }
     case 'r': //RIGHT
     {
       if (rm->right != NULL && rm->right != wall)
-      { return rm->right; }
+      { player->lastDir = 'l'; return rm->right; }
       break;
     }
     case 'l': //LEFT
     {
       if (rm->left != NULL && rm->left != wall)
-      { return rm->left; }
+      { player->lastDir = 'r'; return rm->left; }
       break;
     }
     case 'a': //ABOVE
     {
       if (rm->above != NULL && rm->above != wall)
-      { return rm->above; }
+      { player->lastDir = 'a'; return rm->above; }
       break;
     }
     case 'b': //BELOW
     {
       if (rm->below != NULL && rm->below != wall)
-      { return rm->below; }
+      { player->lastDir = 'b'; return rm->below; }
       break;
     }
   }
@@ -574,32 +576,93 @@ Room* move(std::list<std::pair<std::string, std::string> > &rooms, Room* rm, Roo
   floorGrid[discovered->row][discovered->col] = discovered;
 
   rooms.erase(itr);
+
+  //resetting tracker for players last move -- for cases such as Catacombs -- "cross" keyword
+  switch (dir)
+  {
+    case 'u': //UP
+    { player->lastDir = 'd'; break; }
+    case 'd': //DOWN
+    { player->lastDir = 'u'; break; }
+    case 'r': //RIGHT
+    { player->lastDir = 'l'; break; }
+    case 'l': //LEFT
+    { player->lastDir = 'r'; break; }
+    case 'a': //RIGHT
+    { player->lastDir = 'a'; break; }
+    case 'b': //LEFT
+    { player->lastDir = 'b'; break; }
+  }
+
   return discovered;
 }
 
-void specialThruRoomCases(Character* &player)
+//special cases for Room events (i.e. entering, exiting, while in the room, etc.)
+void specialThruRoomCases(Character* &player, int &movesLeft, char dir)
 {
-  std::string room = player[i]->getLocation()->name;
-  Room* rmPtr = player[i]->getLocation();
+  std::string room = player->getLocation()->name;
+  Room* rmPtr = player->getLocation();
+  int roll = 0;
 
-  } else if (room == "Attic") {
-
+  if (room == "Attic") {
+    std::cout << "You must make a Speed roll to leave, you have " << player->getSpeed() << " Speed.\n"
+              << "Press Enter to roll." << std::endl;
+    std::cin.ignore();
+    roll = rollDie(player->getSpeed());
+    std::cout << "You rolled a(n) " << roll << "\n" << std::endl;
+    if (roll < 3)
+    { std::cout << "You trip on your way out, you lose 1 Might but continue moving.\n" << std::endl; (player->Might)--; }
+    else
+    { std::cout << "You leave successfully.\n" << std::endl; }
   } else if (room == "Catacombs") {
-
+    if (!(dir == player->lastDir))
+    {
+      std::cout << "You must attempt a Sanity roll to cross, you have " << player->getSanity() << " Sanity.\n"
+                << "Press Enter to roll." << std::endl;
+      std::cin.ignore();
+      roll = rollDie(Player->getSanity());
+      std::cout << "You rolled a(n) " << roll << "\n" << std::endl;
+      if (roll < 6)
+      { std::cout << "You are driven mad by the labyrinth of the Catacombs, you are stuck here for your turn." << std::endl; movesLeft = 0; }
+      else
+      { std::cout << "You cross successfully.\n" << std::endl; }
+    }
   } else if (room == "Cave") {
-
+    if (movesLeft != player->getSpeed())
+    {
+      std::cout << "You stumble while rushing through the cave, lose 1 die from a physical trait.\n"
+                << "Press Enter to roll." << std::endl;
+      std::cin.ignore();
+      roll = rollDie(1);
+      std::cout << "You rolled a(n) " << roll << "\n" << std::endl;
+      player->takePhys(roll);
+    }
   } else if (room == "Chasm") {
-
-  } else if (room == "Coal Chute") {
-
-  } else if (room == "Collapsed Room") {
-
-  } else if (room == "Dungeon") {
-
-  } else if (room == "Gallery") {
-
+    if (!(dir == player->lastDir))
+    {
+      std::cout << "You must attempt a Speed roll to cross, you have " << player->getSpeed() << " Speed.\n"
+                << "Press Enter to roll." << std::endl;
+      std::cin.ignore();
+      roll = rollDie(player->getSpeed());
+      std::cout << "You rolled a(n) " << roll << "\n" << std::endl;
+      if (roll < 3)
+      { std::cout << "In rushing to get across the Chasm, you nearly plummet to your death.\nYou decide to stay here for a turn to calm your nerves."
+                  << std::endl; movesLeft = 0; }
+      else
+      { std::cout << "You cross successfully.\n" << std::endl; }
+    }
   } else if (room == "Graveyard") {
-
+    std::cout << "You must attempt a Sanity roll to exit the Graveyard, you have " << player->getSanity() << " Sanity."
+              << "\nPress Enter to roll." << std::endl;
+    std::cin.ignore();
+    roll = rollDie(player->getSanity());
+    std::cout << "You rolled a(n) " << roll << "\n" << std::endl;
+    if (roll < 4)
+    {
+      std::cout << "You recognize your own name on a tombstone on your way out, lose 1 Knowledge." << std::endl;
+      (player->Knowledge)--;
+    }
+    else std::cout << "You exit successfully." << std::endl;
   } else if (room == "Junk Room") {
 
   } else if (room == "Locked Room") {
@@ -626,11 +689,65 @@ void specialThruRoomCases(Character* &player)
   }
 }
 
-//special cases for Room events (i.e. entering, exiting, while in the room, etc.)
-void specialEndRoomCases(Character* &player, int playerNum, int moves)
+void specialEnterRoomCases(Character* &player, Room* &wall)
 {
-  std::string room = player[i]->getLocation()->name;
-  Room* rmPtr = player[i]->getLocation();
+  std::string room = player->getLocation()->name;
+  Room* rmPtr = player->getLocation();
+
+  if (room == "Coal Chute") {
+    std::cout << "You slide down the Coal Chute, into the Basement Landing." << std::endl;
+    player->setRoom(basementF[12][12]);
+  } else if (room == "Collapsed Room") {
+    std::cout << "You must attempt a Speed roll to avoid falling.\nIf you fail, you will fall into ";
+    if (rmPtr->below == wall) std::cout << "DISCOVER A ROOM";
+    else std::cout << "the " << rmPtr->below->name;
+    std::cout << ".\nYou have " << player->getSpeed() << " Speed.\nPress Enter to roll." << std::endl;
+    std::cin.ignore();
+    roll = rollDie(player->getSpeed());
+    std::cout << "You rolled a(n) " << roll << "\n" << std::endl;
+    if (roll < 5)
+    {
+      std::cout << "You fall down the hole in the floor into ";
+      if (rmPtr->below != wall)
+      {
+        std::cout << "the" << rmPtr->below->name << ".\n" << std::endl;
+        player->lastDir = "b";
+        player->setRoom(rmPtr->below);
+      }
+      else
+      {
+
+      }
+      std::cout << " and take 1 die of physical damage.\nPress Enter to roll." << std::endl;
+      std::cin.ignore();
+      roll = rollDie(1);
+      std::cout << "You rolled a(n) " << roll << "\n" << std::endl;
+      player->takePhys(roll);
+    }
+    else
+    {
+      std::cout << "You remain in the Collapsed Room." << std::endl;
+    }
+  } else if (room == "Dungeon") {
+    std::cout << "Upon entering the Dungeon, you must attempt a Sanity roll.\nYou have " << player->getSanity()
+              << " Sanity.\nPress Enter to roll." << std::endl;
+    std::cin.ignore();
+    roll = rollDie(player->getSanity());
+    std::cout << "You rolled a(n) " << roll << "\n" << std::endl;
+    if (roll < 3)
+    {
+      std::cout << "What you see upon entering scars you. Lose 1 Sanity." << std::endl;
+      (player->Sanity)--;
+    }
+    else std::cout << "Nothing happens." << std::endl;
+  }
+}
+
+//special cases for Room events from ending in room
+void specialEndRoomCases(Character* &player, const int playerNum, int moves)
+{
+  std::string room = player->getLocation()->name;
+  Room* rmPtr = player->getLocation();
   int used = 0;
   std::string choice;
 
@@ -648,28 +765,14 @@ void specialEndRoomCases(Character* &player, int playerNum, int moves)
   } else if (room == "Crypt") {
     if (moves == 0)
     {
-      std::cout << "You ended your turn in the Crypt, would you like to take 1 damage in Knowledge or Sanity?\nEnter K or S to choose: ";
-      std::cin >> choice;
-      do {
-        if (choice == "K")
-        { player->Knowledge++; used = 0; }
-        else if (choice == "S")
-        { player->Sanity++; used = 0; }
-        else { used = 1; std::cout << "\nPlease enter a valid choice (K / S): ";
-      } while (used)
+      std::cout << "You ended your turn in the Crypt, so you must take a mental damage." << std::endl;
+      player->takeMent(1);
     }
   } else if (room == "Furnace Room") {
     if (moves == 0)
     {
-      std::cout << "You ended your turn in the Furnace Room, would you like to take 1 damage in Might or Speed?\nEnter M or S to choose: ";
-      std::cin >> choice;
-      do {
-        if (choice == "M")
-        { player->Might++; used = 0; }
-        else if (choice == "S")
-        { player->Speed++; used = 0; }
-        else { used = 1; std::cout << "\nPlease enter a valid choice (M / S): ";
-      } while (used)
+      std::cout << "You ended your turn in the Furnace Room, so you must take a physical damage." << std::endl;
+      player->takePhys(1);
     }
   } else if (room == "Gymnasium") {
     for (uint i = 0; i < rmPtr->statBuffTrack.size(); i++)
@@ -757,7 +860,8 @@ void specialEndRoomCases(Character* &player, int playerNum, int moves)
   } else if (room == "Sewing Room") {
     if (moves == 0 && (player->Might < player->MightStart || player->Speed < player->SpeedStart))
     {
-      std::cout << "You ended your turn in the Sewing Room, would you like to discard an item to gain 1 in a physical trait below its starting value?\nEnter Y or N to choose: ";
+      std::cout << "You ended your turn in the Sewing Room, would you like to discard an item to gain 1 in a physical trait below its starting value?\n" <<
+                    "Enter Y or N to choose: ";
       std::cin >> choice;
       do {
         if (choice == "Y")
@@ -809,9 +913,9 @@ void specialEndRoomCases(Character* &player, int playerNum, int moves)
         } while (used)
       }
       else if (s)
-        { std::cout << "You gained 1 Speed." << std::endl; player->Speed++; }
+        { std::cout << "Your Might is at the maximum value, you gained 1 Speed." << std::endl; player->Speed++; }
       else if (m)
-        { std::cout << "You gained 1 Might." << std::endl; player->Might++; }
+        { std::cout << "Your Speed is at the maximum value, you gained 1 Might." << std::endl; player->Might++; }
     }
   } else if (room == "Solarium") {
     if (moves == 0)
@@ -900,7 +1004,7 @@ int main()
 {
   //Declaring variables
   int playerNum, choice;
-  bool haunt = false;
+  bool haunt = false, ballroom = false;
   Character** players;
   std::ifstream file, charData;
   std::vector<Room*> roomVec;
@@ -1031,6 +1135,9 @@ int main()
                       std::cout << flavorT << std::endl;
                     std::cout << "Your movement options are:" << std::endl;
                     std::cout << players[i]->getLocation()->printRoomOptions(wall);
+
+                    if (n == "Gallery" && ballroom)
+                      std::cout << "   7) Enter the Ballroom (Take 1 die of physical damage)" << std::endl;
                     std::cout << "You have " << moves << " Speed remaining." << std::endl;
                     std::cout << "Enter the direction you wish to move, enter 0 to go back: ";
                     std::cin >> choice;
@@ -1043,7 +1150,7 @@ int main()
                         if (players[i]->getLocation()->up == wall)
                           std::cout << "Please enter a valid choice." << std::endl;
                         else
-                          moved = move(rooms, players[i]->getLocation(), wall, 'u', cards);
+                          moved = move(rooms, players[i], wall, 'u', cards, moves);
                         break;
                       }
                       case 2: //DOWN
@@ -1051,7 +1158,7 @@ int main()
                         if (players[i]->getLocation()->down == wall)
                           std::cout << "Please enter a valid choice." << std::endl;
                         else
-                          moved = move(rooms, players[i]->getLocation(), wall, 'd', cards);
+                          moved = move(rooms, players[i], wall, 'd', cards, moves);
                         break;
                       }
                       case 3: //LEFT
@@ -1059,7 +1166,7 @@ int main()
                         if (players[i]->getLocation()->left == wall)
                           std::cout << "Please enter a valid choice." << std::endl;
                         else
-                          moved = move(rooms, players[i]->getLocation(), wall, 'l', cards);
+                          moved = move(rooms, players[i], wall, 'l', cards, moves);
                         break;
                       }
                       case 4: //RIGHT
@@ -1067,7 +1174,7 @@ int main()
                         if (players[i]->getLocation()->right == wall)
                           std::cout << "Please enter a valid choice." << std::endl;
                         else
-                          moved = move(rooms, players[i]->getLocation(), wall, 'r', cards);
+                          moved = move(rooms, players[i], wall, 'r', cards, moves);
                         break;
                       }
                       case 5: //ABOVE
@@ -1075,7 +1182,7 @@ int main()
                         if (players[i]->getLocation()->above == wall)
                           std::cout << "Please enter a valid choice." << std::endl;
                         else
-                          moved = move(rooms, players[i]->getLocation(), wall, 'a', cards);
+                          moved = move(rooms, players[i], wall, 'a', cards, moves);
                         break;
                       }
                       case 6: //BELOW
@@ -1083,7 +1190,26 @@ int main()
                         if (players[i]->getLocation()->below == wall)
                           std::cout << "Please enter a valid choice." << std::endl;
                         else
-                          moved = move(rooms, players[i]->getLocation(), wall, 'b', cards);
+                          moved = move(rooms, players[i], wall, 'b', cards, moves);
+                        break;
+                      }
+                      case 7: //Gallery
+                      {
+                        if (n == "Gallery" && ballroom)
+                        {
+                          Room* ball;
+                          for (uint i = 0; i < roomVec.size(); i++)
+                            if (roomVec[i]->name == "Ballroom")
+                              ball = roomVec[i];
+                          players[i]->setRoom(ball);
+                          std::cout << "Press Enter to roll your damage." << std::endl;
+                          std::cin.ignore();
+                          roll = rollDie(1);
+                          std::cout << "You rolled a(n) " << roll << "\n" << std::endl;
+                          player->takePhys(roll);
+                        }
+                        else
+                          std::cout << "Please enter a valid choice." << std::endl;
                         break;
                       }
                       case 0: //EXIT
@@ -1140,7 +1266,9 @@ int main()
                       players[i]->setRoom(moved);
                       n = "\033[0;" + players[i]->color + "m" + players[i]->getLocation()->name + "\033[0m";
                       std::cout << "You have moved into the " << n << "." << std::endl;
+                      if (n == "Ballroom") ballroom = true;
                       moves--;
+                      specialEnterRoomCases(player[i]);
 
                       //if a card should be drawn by that room (4th object in cards should be the path to the file)
                       if (cards.size() == 4)
