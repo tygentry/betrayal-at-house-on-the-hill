@@ -246,6 +246,16 @@ void shuffleR(std::pair<std::string, std::string>* &list, int size)
   }
 }
 
+//method to do the main work behind rolling traits, given number of die
+//and returns the number rolled randomly
+int rollDie(int numDie)
+{
+  int sum = 0;
+  for (int i = 0; i < numDie; i++)
+    sum += std::rand() % 3;
+  return sum;
+}
+
 //helper function to move method to create instance of Room and setting appropriate variables
 //also deals with any immediate actions necessary for a room discovery (i.e. item, event, and
 //omen cards)
@@ -479,6 +489,148 @@ void optimizeRoom(Room* &rmR, Room* &rmC, Room* &wall, Room*** &floor, char dir)
   }
 }
 
+//special cases for Room events (i.e. entering, exiting, while in the room, etc.)
+void specialThruRoomCases(Character* &player, int &movesLeft, char dir)
+{
+  std::string room = player->getLocation()->name;
+  int roll = 0;
+  std::string choice;
+
+  if (room == "Attic") {
+    std::cout << "You must make a Speed roll to leave, you have " << player->getSpeed() << " Speed.\n"
+              << "Press Enter to roll." << std::endl;
+    std::cin.ignore();
+    roll = rollDie(player->getSpeed());
+    std::cout << "You rolled a(n) " << roll << "\n" << std::endl;
+    if (roll < 3)
+    { std::cout << "You trip on your way out, you lose 1 Might but continue moving.\n" << std::endl; (player->Might)--; }
+    else
+    { std::cout << "You leave successfully.\n" << std::endl; }
+  } else if (room == "Catacombs") {
+    if (!(dir == player->lastDir))
+    {
+      std::cout << "You must attempt a Sanity roll to cross, you have " << player->getSanity() << " Sanity.\n"
+                << "Press Enter to roll." << std::endl;
+      std::cin.ignore();
+      roll = rollDie(player->getSanity());
+      std::cout << "You rolled a(n) " << roll << "\n" << std::endl;
+      if (roll < 6)
+      { std::cout << "You are driven mad by the labyrinth of the Catacombs, you are stuck here for your turn." << std::endl; movesLeft = 0; }
+      else
+      { std::cout << "You cross successfully.\n" << std::endl; }
+    }
+  } else if (room == "Cave") {
+    if (movesLeft != player->getSpeed())
+    {
+      std::cout << "You stumble while rushing through the cave, lose 1 die from a physical trait.\n"
+                << "Press Enter to roll." << std::endl;
+      std::cin.ignore();
+      roll = rollDie(1);
+      std::cout << "You rolled a(n) " << roll << "\n" << std::endl;
+      player->takePhys(roll);
+    }
+  } else if (room == "Chasm") {
+    if (!(dir == player->lastDir))
+    {
+      std::cout << "You must attempt a Speed roll to cross, you have " << player->getSpeed() << " Speed.\n"
+                << "Press Enter to roll." << std::endl;
+      std::cin.ignore();
+      roll = rollDie(player->getSpeed());
+      std::cout << "You rolled a(n) " << roll << "\n" << std::endl;
+      if (roll < 3)
+      { std::cout << "In rushing to get across the Chasm, you nearly plummet to your death.\nYou decide to stay here for a turn to calm your nerves."
+                  << std::endl; movesLeft = 0; }
+      else
+      { std::cout << "You cross successfully.\n" << std::endl; }
+    }
+  } else if (room == "Graveyard") {
+    std::cout << "You must attempt a Sanity roll to exit the Graveyard, you have " << player->getSanity() << " Sanity."
+              << "\nPress Enter to roll." << std::endl;
+    std::cin.ignore();
+    roll = rollDie(player->getSanity());
+    std::cout << "You rolled a(n) " << roll << "\n" << std::endl;
+    if (roll < 4)
+    {
+      std::cout << "You recognize your own name on a tombstone on your way out, lose 1 Knowledge." << std::endl;
+      (player->Knowledge)--;
+    }
+    else std::cout << "You exit successfully." << std::endl;
+  } else if (room == "Junk Room") {
+    std::cout << "You must attempt a Might roll to move the junk out of your way, you have " << player->getMight() << " Might."
+              << "\nPress Enter to roll." << std::endl;
+    std::cin.ignore();
+    roll = rollDie(player->getMight());
+    std::cout << "You rolled a(n) " << roll << "\n" << std::endl;
+    if (roll < 4)
+    {
+      std::cout << "On the way out your heel gets cut on a piece of metal, lose 1 Speed." << std::endl;
+      (player->Speed)--;
+    }
+    else std::cout << "You exit successfully." << std::endl;
+  } else if (room == "Locked Room") {
+
+  } else if (room == "Mystic Elevator") {
+
+  } else if (room == "Panic Room") {
+    std::cout << "You may attempt a Speed roll to move to any room with a dumbwaiter, you have " << player->getSpeed() << " Speed."
+              << "\nWould you like to roll? (Y/N): ";
+    do {
+      std::cin >> choice;
+      if (choice == "N") break;
+      else if (choice == "Y") roll = 1;
+      else std::cout << "Please enter a valid input (Y or N): ";
+    } while(roll != 1);
+      std::cout << "\nPress Enter to roll." << std::endl;
+    std::cin.ignore();
+    roll = rollDie(player->getSpeed());
+    std::cout << "You rolled a(n) " << roll << "\n" << std::endl;
+    if (roll < 3)
+    {
+      std::cout << "You access the dumbwaiter, what room would you like to move to?" << std::endl;
+
+      //finish implementation of room traversal
+
+    }
+    else std::cout << "You fail the roll, leaving the Panic Room normally." << std::endl;
+  } else if (room == "Pentagram Chamber") {
+    std::cout << "You must attempt a Knowledge roll to exit the Pentagram Chamber, you have " << player->getKnowledge() << " Knowledge."
+              << "\nPress Enter to roll." << std::endl;
+    std::cin.ignore();
+    roll = rollDie(player->getKnowledge());
+    std::cout << "You rolled a(n) " << roll << "\n" << std::endl;
+    if (roll < 4)
+    {
+      std::cout << "Unaware of what horrors have occurred in this room, you hope to never find out and quickly exit. You lose 1 Sanity." << std::endl;
+      (player->Sanity)--;
+    }
+    else std::cout << "Your Knowledge of the occult allows you to exit successfully." << std::endl;
+  } else if (room == "Rookery") {
+
+  } else if (room == "Spiral Staircase") {
+
+  } else if (room == "Tower") {
+    if (!(dir == player->lastDir))
+    {
+      std::cout << "You must attempt a Might roll to cross, you have " << player->getMight() << " Might.\n"
+                << "Press Enter to roll." << std::endl;
+      std::cin.ignore();
+      roll = rollDie(player->getMight());
+      std::cout << "You rolled a(n) " << roll << "\n" << std::endl;
+      if (roll < 3)
+      { std::cout << "A strong wind blows you back to across the Tower, knocking the breath out of your lungs.\n"
+                  << "You remain in the Tower for the rest of your turn to catch your breath." << std::endl; movesLeft = 0; }
+      else
+      { std::cout << "You cross successfully.\n" << std::endl; }
+    }
+  } else if (room == "Tree House") {
+
+  } else if (room == "Vault") {
+
+  } else if (room == "Widow's Walk") {
+  }
+}
+
+
 //main helper method to execute basic movement operation
 //searches the passed rooms list for the next possible room that fits criteria
 //creates that room using additional helper methods, and places it in the house
@@ -597,102 +749,11 @@ Room* move(std::list<std::pair<std::string, std::string> > &rooms, Character* &p
   return discovered;
 }
 
-//special cases for Room events (i.e. entering, exiting, while in the room, etc.)
-void specialThruRoomCases(Character* &player, int &movesLeft, char dir)
-{
-  std::string room = player->getLocation()->name;
-  Room* rmPtr = player->getLocation();
-  int roll = 0;
-
-  if (room == "Attic") {
-    std::cout << "You must make a Speed roll to leave, you have " << player->getSpeed() << " Speed.\n"
-              << "Press Enter to roll." << std::endl;
-    std::cin.ignore();
-    roll = rollDie(player->getSpeed());
-    std::cout << "You rolled a(n) " << roll << "\n" << std::endl;
-    if (roll < 3)
-    { std::cout << "You trip on your way out, you lose 1 Might but continue moving.\n" << std::endl; (player->Might)--; }
-    else
-    { std::cout << "You leave successfully.\n" << std::endl; }
-  } else if (room == "Catacombs") {
-    if (!(dir == player->lastDir))
-    {
-      std::cout << "You must attempt a Sanity roll to cross, you have " << player->getSanity() << " Sanity.\n"
-                << "Press Enter to roll." << std::endl;
-      std::cin.ignore();
-      roll = rollDie(Player->getSanity());
-      std::cout << "You rolled a(n) " << roll << "\n" << std::endl;
-      if (roll < 6)
-      { std::cout << "You are driven mad by the labyrinth of the Catacombs, you are stuck here for your turn." << std::endl; movesLeft = 0; }
-      else
-      { std::cout << "You cross successfully.\n" << std::endl; }
-    }
-  } else if (room == "Cave") {
-    if (movesLeft != player->getSpeed())
-    {
-      std::cout << "You stumble while rushing through the cave, lose 1 die from a physical trait.\n"
-                << "Press Enter to roll." << std::endl;
-      std::cin.ignore();
-      roll = rollDie(1);
-      std::cout << "You rolled a(n) " << roll << "\n" << std::endl;
-      player->takePhys(roll);
-    }
-  } else if (room == "Chasm") {
-    if (!(dir == player->lastDir))
-    {
-      std::cout << "You must attempt a Speed roll to cross, you have " << player->getSpeed() << " Speed.\n"
-                << "Press Enter to roll." << std::endl;
-      std::cin.ignore();
-      roll = rollDie(player->getSpeed());
-      std::cout << "You rolled a(n) " << roll << "\n" << std::endl;
-      if (roll < 3)
-      { std::cout << "In rushing to get across the Chasm, you nearly plummet to your death.\nYou decide to stay here for a turn to calm your nerves."
-                  << std::endl; movesLeft = 0; }
-      else
-      { std::cout << "You cross successfully.\n" << std::endl; }
-    }
-  } else if (room == "Graveyard") {
-    std::cout << "You must attempt a Sanity roll to exit the Graveyard, you have " << player->getSanity() << " Sanity."
-              << "\nPress Enter to roll." << std::endl;
-    std::cin.ignore();
-    roll = rollDie(player->getSanity());
-    std::cout << "You rolled a(n) " << roll << "\n" << std::endl;
-    if (roll < 4)
-    {
-      std::cout << "You recognize your own name on a tombstone on your way out, lose 1 Knowledge." << std::endl;
-      (player->Knowledge)--;
-    }
-    else std::cout << "You exit successfully." << std::endl;
-  } else if (room == "Junk Room") {
-
-  } else if (room == "Locked Room") {
-
-  } else if (room == "Mystic Elevator") {
-
-  } else if (room == "Panic Room") {
-
-  } else if (room == "Pentagram Chamber") {
-
-  } else if (room == "Rookery") {
-
-  } else if (room == "Spiral Staircase") {
-
-  } else if (room == "Stairs From Basement") {
-
-  } else if (room == "Tower") {
-
-  } else if (room == "Tree House") {
-
-  } else if (room == "Vault") {
-
-  } else if (room == "Widow's Walk") {
-  }
-}
-
 void specialEnterRoomCases(Character* &player, Room* &wall)
 {
   std::string room = player->getLocation()->name;
   Room* rmPtr = player->getLocation();
+  int roll = 0;
 
   if (room == "Coal Chute") {
     std::cout << "You slide down the Coal Chute, into the Basement Landing." << std::endl;
@@ -711,7 +772,7 @@ void specialEnterRoomCases(Character* &player, Room* &wall)
       if (rmPtr->below != wall)
       {
         std::cout << "the" << rmPtr->below->name << ".\n" << std::endl;
-        player->lastDir = "b";
+        player->lastDir = 'b';
         player->setRoom(rmPtr->below);
       }
       else
@@ -798,27 +859,28 @@ void specialEndRoomCases(Character* &player, const int playerNum, int moves)
         { used = 0; }
         else if (choice == "N")
         { return; }
-        else { used = 1; std::cout << "\nPlease enter a valid choice (Y / N): ";
-      } while (used)
-      std::vector<std::pair<std::string, int> > items;
-      for (uint i = 0; i < player->inventory.size(); i++)
-        if (player->inventory[i].second == 'i')
+        else { used = 1; std::cout << "\nPlease enter a valid choice (Y / N): "; }
+      } while (used);
+
+      std::vector<std::pair<std::string, int> > itemsList;
+      for (int i = 0; i < player->invSize(); i++)
+        if (player->getInvType(i) == 'i')
         {
           used++;
-          items.push_back(std::make_pair(player->inventory[i]->first, i));
+          itemsList.push_back(std::make_pair(player->getInvName(i), i));
         }
 
       if (used == 0)
       { std::cout << "You don't have any items to discard!" << std::endl; return; }
 
-      for (uint i = 0; i < items.size(); i++)
-        std::cout << "   " << i << ") " << items[i] << std::endl;
+      for (uint i = 0; i < itemsList.size(); i++)
+        std::cout << "   " << i << ") " << itemsList[i].first << std::endl;
       std::cout << "Enter -1 to exit, or the number of the item you wish to discard: ";
       do {
         std::cin >> used;
         obtainValidNum(used);
-        if (used >= items.size() && used < -1) std::cout << "Please enter a valid choice: ";
-      } while (used >= items.size() && used < -1)
+        if (used >= (int)itemsList.size() && used < -1) std::cout << "Please enter a valid choice: ";
+      } while (used >= (int)itemsList.size() && used < -1);
       if (used == -1) return;
 
       //Delete chosen item
@@ -843,8 +905,8 @@ void specialEndRoomCases(Character* &player, const int playerNum, int moves)
         { player->Might++; used = 0; std::cout << "You gained 1 Might." << std::endl; }
         else if (choice == "S")
         { player->Speed++; used = 0; std::cout << "You gained 1 Speed." << std::endl; }
-        else { used = 1; std::cout << "\nPlease enter a valid choice (M / S): ";
-      } while (used)
+        else { used = 1; std::cout << "\nPlease enter a valid choice (M / S): "; }
+      } while (used);
       rmPtr->statBuffTrack.push_back(playerNum);
     }
   } else if (room == "Nursery") {
@@ -868,27 +930,27 @@ void specialEndRoomCases(Character* &player, const int playerNum, int moves)
         { used = 0; }
         else if (choice == "N")
         { return; }
-        else { used = 1; std::cout << "\nPlease enter a valid choice (Y / N): ";
-      } while (used)
+        else { used = 1; std::cout << "\nPlease enter a valid choice (Y / N): "; }
+      } while (used);
       std::vector<std::pair<std::string, int> > items;
-      for (uint i = 0; i < player->inventory.size(); i++)
-        if (player->inventory[i].second == 'i')
+      for (int i = 0; i < player->invSize(); i++)
+        if (player->getInvType(i) == 'i')
         {
           used++;
-          items.push_back(std::make_pair(player->inventory[i]->first, i));
+          items.push_back(std::make_pair(player->getInvName(i), i));
         }
 
       if (used == 0)
       { std::cout << "You don't have any items to discard!" << std::endl; return; }
 
       for (uint i = 0; i < items.size(); i++)
-        std::cout << "   " << i << ") " << items[i] << std::endl;
+        std::cout << "   " << i << ") " << items[i].first << std::endl;
       std::cout << "Enter -1 to exit, or the number of the item you wish to discard: ";
       do {
         std::cin >> used;
         obtainValidNum(used);
-        if (used >= items.size() && used < -1) std::cout << "Please enter a valid choice: ";
-      } while (used >= items.size() && used < -1)
+        if (used >= (int)items.size() && used < -1) std::cout << "Please enter a valid choice: ";
+      } while (used >= (int)items.size() && used < -1);
       if (used == -1) return;
 
       //Delete chosen item
@@ -896,9 +958,9 @@ void specialEndRoomCases(Character* &player, const int playerNum, int moves)
       bool s = false, m = false;
       std::cout << "Please choose which physical trait you would like to increase:" << std::endl;
       if (player->Might < player->MightStart)
-        { std::cout << "Your Might is " << player->getMight() << << std::endl; m = true; }
+        { std::cout << "Your Might: " << player->getMight() << std::endl; m = true; }
       if (player->Speed < player->SpeedStart)
-        { std::cout << "Your Speed is " << player->getSpeed() << std::endl; s = true; }
+        { std::cout << "Your Speed: " << player->getSpeed() << std::endl; s = true; }
 
       if (s && m)
       {
@@ -909,8 +971,8 @@ void specialEndRoomCases(Character* &player, const int playerNum, int moves)
           { player->Might++; used = 0; std::cout << "You gained 1 Might." << std::endl;}
           else if (choice == "S")
           { player->Speed++; used = 0; std::cout << "You gained 1 Speed." << std::endl;}
-          else { used = 1; std::cout << "\nPlease enter a valid choice (M / S): ";
-        } while (used)
+          else { used = 1; std::cout << "\nPlease enter a valid choice (M / S): "; }
+        } while (used);
       }
       else if (s)
         { std::cout << "Your Might is at the maximum value, you gained 1 Speed." << std::endl; player->Speed++; }
@@ -927,27 +989,27 @@ void specialEndRoomCases(Character* &player, const int playerNum, int moves)
         { used = 0; }
         else if (choice == "N")
         { return; }
-        else { used = 1; std::cout << "\nPlease enter a valid choice (Y / N): ";
-      } while (used)
+        else { used = 1; std::cout << "\nPlease enter a valid choice (Y / N): "; }
+      } while (used);
       std::vector<std::pair<std::string, int> > items;
-      for (uint i = 0; i < player->inventory.size(); i++)
-        if (player->inventory[i].second == 'i')
+      for (int i = 0; i < player->invSize(); i++)
+        if (player->getInvType(i) == 'i')
         {
           used++;
-          items.push_back(std::make_pair(player->inventory[i]->first, i));
+          items.push_back(std::make_pair(player->getInvName(i), i));
         }
 
       if (used == 0)
       { std::cout << "You don't have any items to discard!" << std::endl; return; }
 
       for (uint i = 0; i < items.size(); i++)
-        std::cout << "   " << i << ") " << items[i] << std::endl;
+        std::cout << "   " << i << ") " << items[i].first << std::endl;
       std::cout << "Enter -1 to exit, or the number of the item you wish to discard: ";
       do {
         std::cin >> used;
         obtainValidNum(used);
-        if (used >= items.size() && used < -1) std::cout << "Please enter a valid choice: ";
-      } while (used >= items.size() && used < -1)
+        if (used >= (int)items.size() && used < -1) std::cout << "Please enter a valid choice: ";
+      } while (used >= (int)items.size() && used < -1);
       if (used == -1) return;
 
       //Delete chosen item
@@ -968,21 +1030,11 @@ void specialEndRoomCases(Character* &player, const int playerNum, int moves)
         { player->Knowledge++; used = 0; std::cout << "You gained 1 Knowledge." << std::endl;}
         else if (choice == "S")
         { player->Sanity++; used = 0; std::cout << "You gained 1 Sanity." << std::endl;}
-        else { used = 1; std::cout << "\nPlease enter a valid choice (K / S): ";
-      } while (used)
+        else { used = 1; std::cout << "\nPlease enter a valid choice (K / S): "; }
+      } while (used);
       rmPtr->statBuffTrack.push_back(playerNum);
     }
   }
-}
-
-//method to do the main work behind rolling traits, given number of die
-//and returns the number rolled randomly
-int rollDie(int numDie)
-{
-  int sum = 0;
-  for (int i = 0; i < numDie; i++)
-    sum += std::rand() % 3;
-  return sum;
 }
 
 void clearGrid(Room*** &f)
@@ -1193,22 +1245,22 @@ int main()
                           moved = move(rooms, players[i], wall, 'b', cards, moves);
                         break;
                       }
-                      case 7: //Gallery
+                      case 7: //Special Room Cases
                       {
-                        if (n == "Gallery" && ballroom)
-                        {
-                          Room* ball;
-                          for (uint i = 0; i < roomVec.size(); i++)
-                            if (roomVec[i]->name == "Ballroom")
-                              ball = roomVec[i];
-                          players[i]->setRoom(ball);
-                          std::cout << "Press Enter to roll your damage." << std::endl;
-                          std::cin.ignore();
-                          roll = rollDie(1);
-                          std::cout << "You rolled a(n) " << roll << "\n" << std::endl;
-                          player->takePhys(roll);
-                        }
-                        else
+                        // if (n == "Gallery" && ballroom)
+                        // {
+                        //   Room* ball;
+                        //   for (uint i = 0; i < roomVec.size(); i++)
+                        //     if (roomVec[i]->name == "Ballroom")
+                        //       ball = roomVec[i];
+                        //   players[i]->setRoom(ball);
+                        //   std::cout << "Press Enter to roll your damage." << std::endl;
+                        //   std::cin.ignore();
+                        //   roll = rollDie(1);
+                        //   std::cout << "You rolled a(n) " << roll << "\n" << std::endl;
+                        //   player->takePhys(roll);
+                        // }
+                        // else
                           std::cout << "Please enter a valid choice." << std::endl;
                         break;
                       }
@@ -1266,9 +1318,20 @@ int main()
                       players[i]->setRoom(moved);
                       n = "\033[0;" + players[i]->color + "m" + players[i]->getLocation()->name + "\033[0m";
                       std::cout << "You have moved into the " << n << "." << std::endl;
+
+                      //passive room interactions upon discovery
                       if (n == "Ballroom") ballroom = true;
+                      else if (n == "Stairs From Basement")
+                      {
+                        if (moved->left == NULL) moved->left = ground->up;
+                        else if (moved->right == NULL) moved->right = ground->up;
+                        else if (moved->up == NULL) moved->up = ground->up;
+                        else moved->down = ground->up;
+
+                        ground->up->below = moved;
+                      }
                       moves--;
-                      specialEnterRoomCases(player[i]);
+                      specialEnterRoomCases(players[i], wall);
 
                       //if a card should be drawn by that room (4th object in cards should be the path to the file)
                       if (cards.size() == 4)

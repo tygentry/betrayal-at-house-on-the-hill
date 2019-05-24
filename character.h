@@ -72,6 +72,9 @@ public:
 
   Room* getLocation() { return location; }
   void setRoom(Room* l) { location = l; }
+  int invSize() { return inventory.size(); }
+  char getInvType(int index) { return inventory[index].second; }
+  std::string getInvName(int index) { return inventory[index].first; }
   void takePhys(int dmg);
   void takeMent(int dmg);
 

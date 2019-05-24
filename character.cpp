@@ -57,8 +57,8 @@ void Character::takePhys(int dmg)
         { Might--; used = 0; }
         else if (choice == "S")
         { Speed--; used = 0; }
-        else { used = 1; std::cout << "\nPlease enter a valid choice (M / S): ";
-      } while (used)
+        else { used = 1; std::cout << "\nPlease enter a valid choice (M / S): "; }
+      } while (used);
     }
     else if (Might - dmg > 0)
     {
@@ -73,7 +73,7 @@ void Character::takePhys(int dmg)
     else
     {
       std::cout << "You have died." << std::endl;
-      isDead = true;
+      return;
     }
   }
 }
@@ -98,8 +98,8 @@ void Character::takeMent(int dmg)
         { Knowledge--; used = 0; }
         else if (choice == "S")
         { Sanity--; used = 0; }
-        else { used = 1; std::cout << "\nPlease enter a valid choice (K / S): ";
-      } while (used)
+        else { used = 1; std::cout << "\nPlease enter a valid choice (K / S): "; }
+      } while (used);
     }
     else if (Knowledge - dmg > 0)
     {
@@ -116,7 +116,6 @@ void Character::takeMent(int dmg)
     else
     {
       std::cout << "You have died." << std::endl;
-      isDead = true;
       return;
     }
   }
