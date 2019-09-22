@@ -10,6 +10,7 @@ Character Selection Screen:
 ![Character Selection 2](/images/characterSelect2.png)
 
 Average Turn Example:
+
 ![Turn](/images/turnText.png)
 
 Sneak Peak at Models for eventual transition to 3D (Model and Textures by Tyler Howell)
