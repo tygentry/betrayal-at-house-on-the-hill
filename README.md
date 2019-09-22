@@ -6,11 +6,13 @@ Run the Current build after compiling with "./main.out"
 
 # Gameplay Images
 Character Selection Screen
-![Character Selection 1](/images/characterSelection1.png)
-![Character Selection 2](/images/characterSelection2.png)
+![Character Selection 1](/images/characterSelect1.png)
+![Character Selection 2](/images/characterSelect2.png)
+
 Average Turn Example
 ![Turn](/images/turnText.png)
-Sneak Peak at Models for eventual transition to 3D
-![Betrayal 3D](/images/betrayal3d.png)
+
+Sneak Peak at Models for eventual transition to 3D (Model and Textures by Tyler Howell)
+![Betrayal 3D](/images/betrayal3d.jpg)
 
 Game data transcription assistance provided by Caius Jacott, Keelin Berger, and Justin Wang.
